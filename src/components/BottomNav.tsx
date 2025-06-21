@@ -1,5 +1,5 @@
 
-import { Home, Users, Trophy, ShoppingBag } from "lucide-react";
+import { Home, CreditCard, Trophy, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -9,7 +9,7 @@ const BottomNav = () => {
 
   const navItems = [
     { icon: Home, path: "/", label: "Home" },
-    { icon: Users, path: "/cards", label: "Cards" },
+    { icon: CreditCard, path: "/cards", label: "Cards" },
     { icon: ShoppingBag, path: "/shop", label: "Shop" },
     { icon: Trophy, path: "/rewards", label: "Rewards" }
   ];
@@ -40,7 +40,7 @@ const BottomNav = () => {
                   transition-all duration-300 transform hover:scale-110
                   ${isActive 
                     ? 'bg-gradient-to-t from-yellow-500/30 via-yellow-400/20 to-yellow-300/10 text-yellow-300 shadow-lg shadow-yellow-400/25 border border-yellow-400/30' 
-                    : 'text-gray-300 hover:text-white hover:bg-gradient-to-t hover:from-white/10 hover:to-white/5'
+                    : 'text-gray-300 hover:text-yellow-200 hover:bg-gradient-to-t hover:from-purple-600/40 hover:to-indigo-600/20'
                   }
                 `}
               >
