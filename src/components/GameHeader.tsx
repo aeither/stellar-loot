@@ -31,11 +31,11 @@ const GameHeader = ({ xlmBalance, notifications }: GameHeaderProps) => {
         <Button 
           variant="ghost" 
           size="sm" 
-          className="relative text-white hover:bg-white/10"
+          className="relative text-white hover:bg-white/10 p-2"
         >
           <Bell className="w-5 h-5" />
           {notifications > 0 && (
-            <Badge className="absolute -top-2 -right-2 w-5 h-5 p-0 bg-red-500 hover:bg-red-500 text-xs">
+            <Badge className="absolute -top-1 -right-1 w-5 h-5 p-0 bg-red-500 hover:bg-red-500 text-xs flex items-center justify-center min-w-5">
               {notifications}
             </Badge>
           )}
