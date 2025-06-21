@@ -4,6 +4,32 @@
 
 **URL**: https://lovable.dev/projects/c4d72b88-4d38-4ac0-aad1-db9e0e271e1d
 
+## Stellar Wallet Integration
+
+This project includes comprehensive Stellar wallet functionality with support for:
+
+### Features
+- **Browser Wallet Connection**: Connect Freighter and xBull wallets
+- **Manual Wallet Creation**: Generate new Stellar keypairs for testing
+- **Testnet Funding**: Automatically fund wallets on Stellar testnet
+- **Balance Checking**: View wallet balances in real-time
+- **Transaction Signing**: Sign transactions and messages with connected wallets
+
+### How to Use
+1. Navigate to the **Wallet** tab in the bottom navigation
+2. **Connect Browser Wallet**: Click "Connect Wallet" to connect Freighter or xBull
+3. **Create Manual Wallet**: Click "Create New Wallet" to generate a test wallet
+4. **Fund Testnet**: Use "Fund on Testnet" to get test XLM for development
+
+### Dependencies
+- `@stellar/stellar-sdk`: Core Stellar functionality
+- `@creit.tech/stellar-wallets-kit`: Browser wallet integration
+
+### Security Notes
+- Manual wallet secret keys are for testing only
+- Never share secret keys in production
+- Use browser wallets for production applications
+
 ## How can I edit this code?
 
 There are several ways of editing your application.
