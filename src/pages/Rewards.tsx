@@ -4,171 +4,176 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import GameHeader from "@/components/GameHeader";
 import BottomNav from "@/components/BottomNav";
-import RewardCards from "@/components/RewardCards";
-import { Trophy, Gift, Star } from "lucide-react";
+import { Trophy } from "lucide-react";
 
 const Rewards = () => {
   const [xlmBalance] = useState(1250.75);
   
-  const dailyRewards = [
+  const cardSets = [
     {
-      day: 1,
-      reward: "0.05 XLM",
-      claimed: true,
-      icon: Gift
+      title: "Space Adventure Set",
+      reward: "5 XLM",
+      status: "ready", // ready, incomplete, claimed
+      requiredCards: [
+        { name: "Saturn", collected: false },
+        { name: "Galaxy", collected: true },
+        { name: "Astronaut", collected: true }
+      ]
     },
     {
-      day: 2,
-      reward: "1 Basic Pack",
-      claimed: true,
-      icon: Gift
+      title: "City Life Set", 
+      reward: "4 XLM",
+      status: "incomplete",
+      requiredCards: [
+        { name: "Skyscraper", collected: false },
+        { name: "Street Art", collected: true },
+        { name: "Traffic", collected: true }
+      ]
     },
     {
-      day: 3,
-      reward: "0.1 XLM",
-      claimed: false,
-      icon: Gift
+      title: "Ocean Explorer Set",
+      reward: "2 XLM", 
+      status: "claimed",
+      requiredCards: [
+        { name: "Blue Whale", collected: true },
+        { name: "Coral Reef", collected: true }
+      ]
     },
     {
-      day: 4,
-      reward: "1 Premium Pack",
-      claimed: false,
-      icon: Star
-    },
-    {
-      day: 5,
-      reward: "0.2 XLM",
-      claimed: false,
-      icon: Trophy
+      title: "Nature Collection",
+      reward: "3 XLM",
+      status: "incomplete", 
+      requiredCards: [
+        { name: "Forest", collected: false },
+        { name: "Mountain", collected: false },
+        { name: "River", collected: true }
+      ]
     }
   ];
 
-  const achievements = [
-    {
-      title: "First Collection",
-      description: "Collect your first card",
-      reward: "0.05 XLM",
-      completed: true
-    },
-    {
-      title: "Pack Hunter",
-      description: "Open 10 card packs",
-      reward: "0.1 XLM",
-      completed: false,
-      progress: "3/10"
-    },
-    {
-      title: "Set Master",
-      description: "Complete your first set",
-      reward: "0.5 XLM",
-      completed: false,
-      progress: "0/1"
-    }
-  ];
+  const readyToClaimCount = cardSets.filter(set => set.status === 'ready').length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
       <div className="relative z-10 pb-24">
         <GameHeader xlmBalance={xlmBalance} notifications={0} />
         
-        <div className="px-6 py-6 space-y-8">
+        <div className="px-6 py-6 space-y-6">
           {/* Header */}
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-yellow-300 mb-2">REWARDS</h1>
-            <p className="text-gray-300">Claim your daily rewards and achievements</p>
-          </div>
-
-          {/* Daily Rewards */}
-          <div>
-            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-              <Gift className="w-6 h-6 mr-2 text-yellow-300" />
-              Daily Rewards
-            </h3>
-            <div className="grid grid-cols-5 gap-2">
-              {dailyRewards.map((reward, index) => {
-                const IconComponent = reward.icon;
-                return (
-                  <Card 
-                    key={index}
-                    className={`${reward.claimed 
-                      ? 'bg-green-600/20 border-green-400/30' 
-                      : reward.day === 3 
-                      ? 'bg-yellow-600/20 border-yellow-400/30' 
-                      : 'bg-white/10 border-white/20'
-                    } backdrop-blur-sm border-2 transition-all duration-300`}
-                  >
-                    <CardContent className="p-3 text-center">
-                      <IconComponent className={`w-6 h-6 mx-auto mb-2 ${
-                        reward.claimed ? 'text-green-400' : 
-                        reward.day === 3 ? 'text-yellow-400' : 'text-gray-400'
-                      }`} />
-                      <p className="text-xs font-bold text-white">Day {reward.day}</p>
-                      <p className="text-xs text-gray-300">{reward.reward}</p>
-                      {reward.day === 3 && (
-                        <Button size="sm" className="mt-2 bg-yellow-500 hover:bg-yellow-600 text-black text-xs py-1 px-2">
-                          Claim
-                        </Button>
-                      )}
-                    </CardContent>
-                  </Card>
-                );
-              })}
+            <div className="flex items-center justify-center space-x-4 mb-4">
+              <h1 className="text-3xl font-bold text-yellow-300">CARD SETS</h1>
+              {readyToClaimCount > 0 && (
+                <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-black px-4 py-2 rounded-full flex items-center space-x-2">
+                  <Trophy className="w-5 h-5" />
+                  <span className="font-bold">{readyToClaimCount} READY</span>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Achievements */}
-          <div>
-            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-              <Trophy className="w-6 h-6 mr-2 text-yellow-300" />
-              Achievements
-            </h3>
-            <div className="space-y-3">
-              {achievements.map((achievement, index) => (
-                <Card 
-                  key={index}
-                  className="bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300"
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                          achievement.completed 
-                          ? 'bg-gradient-to-br from-green-500 to-emerald-500' 
-                          : 'bg-gradient-to-br from-gray-600 to-gray-700'
-                        }`}>
-                          <Trophy className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                          <h4 className="font-bold text-white">{achievement.title}</h4>
-                          <p className="text-sm text-gray-300">{achievement.description}</p>
-                          {achievement.progress && (
-                            <p className="text-xs text-yellow-300">{achievement.progress}</p>
-                          )}
+          {/* Ready to Claim Section */}
+          {cardSets.filter(set => set.status === 'ready').length > 0 && (
+            <div>
+              <h2 className="text-xl font-bold text-yellow-300 mb-4 text-center">READY TO CLAIM</h2>
+              <div className="space-y-4">
+                {cardSets.filter(set => set.status === 'ready').map((set, index) => (
+                  <Card key={index} className="bg-gradient-to-br from-purple-600/40 to-blue-600/40 backdrop-blur-sm border-2 border-yellow-400/30">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xl font-bold text-white">{set.title}</h3>
+                        <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-black px-3 py-1 rounded-full">
+                          <span className="font-bold">{set.reward}</span>
                         </div>
                       </div>
                       
-                      <div className="text-right">
-                        <p className="text-lg font-bold text-yellow-300 mb-2">{achievement.reward}</p>
-                        <Button 
-                          size="sm" 
-                          className={`${achievement.completed 
-                            ? 'bg-green-500 hover:bg-green-600 text-white' 
-                            : 'bg-gray-600 text-gray-300'
-                          } font-bold`}
-                          disabled={!achievement.completed}
-                        >
-                          {achievement.completed ? 'Claim' : 'Locked'}
-                        </Button>
+                      <p className="text-gray-300 mb-4">Required Cards:</p>
+                      
+                      <div className="grid grid-cols-3 gap-3 mb-6">
+                        {set.requiredCards.map((card, cardIndex) => (
+                          <div key={cardIndex} className={`aspect-square rounded-lg flex items-center justify-center ${card.collected ? 'bg-gradient-to-br from-blue-500 to-teal-500' : 'bg-gray-600/50 border-2 border-dashed border-gray-500'}`}>
+                            <span className="text-white font-semibold text-center text-sm">{card.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-3 text-lg">
+                        CLAIM
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Incomplete Sets Section */}
+          <div>
+            <h2 className="text-xl font-bold text-yellow-300 mb-4 text-center">COLLECT MORE CARDS</h2>
+            <div className="space-y-4">
+              {cardSets.filter(set => set.status === 'incomplete').map((set, index) => (
+                <Card key={index} className="bg-white/10 backdrop-blur-sm border border-white/20">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-xl font-bold text-white">{set.title}</h3>
+                      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-black px-3 py-1 rounded-full">
+                        <span className="font-bold">{set.reward}</span>
                       </div>
                     </div>
+                    
+                    <p className="text-gray-300 mb-4">Required Cards:</p>
+                    
+                    <div className="grid grid-cols-3 gap-3 mb-6">
+                      {set.requiredCards.map((card, cardIndex) => (
+                        <div key={cardIndex} className={`aspect-square rounded-lg flex items-center justify-center ${card.collected ? 'bg-gradient-to-br from-blue-500 to-teal-500' : 'bg-gray-600/50 border-2 border-dashed border-gray-500'}`}>
+                          <span className="text-white font-semibold text-center text-sm">{card.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <Button className="w-full bg-gray-600 text-gray-300 font-bold py-3 text-lg" disabled>
+                      INCOMPLETE
+                    </Button>
                   </CardContent>
                 </Card>
               ))}
             </div>
           </div>
 
-          {/* Set Completion Rewards */}
-          <RewardCards />
+          {/* Completed Sets Section */}
+          {cardSets.filter(set => set.status === 'claimed').length > 0 && (
+            <div>
+              <h2 className="text-xl font-bold text-yellow-300 mb-4 text-center">COMPLETED</h2>
+              <div className="space-y-4">
+                {cardSets.filter(set => set.status === 'claimed').map((set, index) => (
+                  <Card key={index} className="bg-green-600/20 backdrop-blur-sm border border-green-400/30">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xl font-bold text-white">{set.title}</h3>
+                        <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-black px-3 py-1 rounded-full">
+                          <span className="font-bold">{set.reward}</span>
+                        </div>
+                      </div>
+                      
+                      <p className="text-gray-300 mb-4">Required Cards:</p>
+                      
+                      <div className="grid grid-cols-2 gap-3 mb-6">
+                        {set.requiredCards.map((card, cardIndex) => (
+                          <div key={cardIndex} className="aspect-square rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-teal-500">
+                            <span className="text-white font-semibold text-center text-sm">{card.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <Button className="w-full bg-gray-700 text-gray-400 font-bold py-3 text-lg" disabled>
+                        CLAIMED
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
