@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { X, Sparkles, Star, Gem } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -72,7 +71,7 @@ const ChestOpening = ({ onClose }: ChestOpeningProps) => {
           variant="ghost"
           size="sm"
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 text-white hover:bg-white/20 rounded-full p-2"
+          className="absolute -top-2 -right-2 z-10 text-white hover:bg-white/20 rounded-full w-10 h-10 p-0 bg-black/40 backdrop-blur-sm border border-white/20"
         >
           <X className="w-5 h-5" />
         </Button>
@@ -83,7 +82,7 @@ const ChestOpening = ({ onClose }: ChestOpeningProps) => {
             variant="ghost"
             size="sm"
             onClick={handleSkip}
-            className="absolute top-4 left-4 z-10 text-yellow-300 hover:bg-yellow-400/20 rounded-full px-4 py-2 text-sm font-bold"
+            className="absolute -top-2 -left-2 z-10 text-yellow-300 hover:bg-yellow-400/20 rounded-full px-4 py-2 text-sm font-bold bg-black/40 backdrop-blur-sm border border-yellow-400/30"
           >
             Skip ⚡
           </Button>
