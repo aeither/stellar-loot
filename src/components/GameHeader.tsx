@@ -10,32 +10,32 @@ interface GameHeaderProps {
 
 const GameHeader = ({ xlmBalance, notifications }: GameHeaderProps) => {
   return (
-    <div className="flex items-center justify-between p-4 bg-black/20 backdrop-blur-sm">
+    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-black/40 via-purple-900/40 to-black/40 backdrop-blur-lg border-b border-purple-500/30 shadow-2xl">
       <div className="flex items-center space-x-3">
-        <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center font-bold text-black text-lg">
-          T
+        <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 rounded-full flex items-center justify-center font-bold text-black text-xl shadow-2xl border-3 border-yellow-300 transform hover:scale-110 transition-transform duration-200">
+          🎰
         </div>
         <div>
-          <h2 className="font-bold text-white">TriviaRush</h2>
-          <p className="text-xs text-gray-300">Level 15</p>
+          <h2 className="font-bold text-white text-lg drop-shadow-lg">TriviaRush Casino</h2>
+          <p className="text-sm text-yellow-300 drop-shadow-md">🏆 High Roller - Level 15</p>
         </div>
       </div>
       
       <div className="flex items-center space-x-3">
-        <div className="bg-yellow-500/20 backdrop-blur-sm rounded-full px-3 py-1 border border-yellow-400/30">
-          <p className="text-yellow-300 font-bold text-sm">
-            {xlmBalance.toFixed(2)} XLM
+        <div className="bg-gradient-to-r from-yellow-500/30 via-orange-500/30 to-yellow-500/30 backdrop-blur-sm rounded-full px-4 py-2 border-2 border-yellow-400/50 shadow-xl transform hover:scale-105 transition-transform duration-200">
+          <p className="text-yellow-300 font-bold text-sm drop-shadow-lg">
+            💰 {xlmBalance.toFixed(2)} XLM
           </p>
         </div>
         
         <Button 
           variant="ghost" 
           size="sm" 
-          className="relative text-white hover:bg-white/10 p-2"
+          className="relative text-white hover:bg-white/20 p-3 rounded-full bg-gradient-to-br from-purple-600/50 to-indigo-600/50 border border-purple-400/30 shadow-lg transform hover:scale-110 transition-all duration-200"
         >
-          <Bell className="w-5 h-5" />
+          <Bell className="w-6 h-6 drop-shadow-lg" />
           {notifications > 0 && (
-            <Badge className="absolute -top-1 -right-1 w-5 h-5 p-0 bg-red-500 hover:bg-red-500 text-xs flex items-center justify-center min-w-5">
+            <Badge className="absolute -top-1 -right-1 w-6 h-6 p-0 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-xs flex items-center justify-center min-w-6 animate-pulse shadow-xl border-2 border-white">
               {notifications}
             </Badge>
           )}
