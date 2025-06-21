@@ -4,43 +4,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import GameHeader from "@/components/GameHeader";
 import BottomNav from "@/components/BottomNav";
-import { ShoppingBag, Zap } from "lucide-react";
+import ChestOpening from "@/components/ChestOpening";
+import { Package } from "lucide-react";
 
 const Shop = () => {
   const [xlmBalance] = useState(1250.75);
-  
-  const packs = [
-    {
-      id: 1,
-      name: "Basic Pack",
-      price: "0.1 XLM",
-      cards: 3,
-      rarity: "Common",
-      color: "from-blue-600 to-purple-600",
-      description: "3 random cards"
-    },
-    {
-      id: 2,
-      name: "Premium Pack",
-      price: "0.3 XLM",
-      cards: 5,
-      rarity: "Rare",
-      color: "from-purple-600 to-pink-600",
-      description: "5 cards with guaranteed rare"
-    },
-    {
-      id: 3,
-      name: "Ultra Pack",
-      price: "0.5 XLM",
-      cards: 8,
-      rarity: "Epic",
-      color: "from-orange-600 to-red-600",
-      description: "8 cards with guaranteed epic"
-    }
-  ];
+  const [showChestOpening, setShowChestOpening] = useState(false);
 
-  const handleBuyPack = (pack: typeof packs[0]) => {
-    console.log(`Buying ${pack.name} for ${pack.price}`);
+  const handleBuyPack = () => {
+    setShowChestOpening(true);
+  };
+
+  const handleCloseChest = () => {
+    setShowChestOpening(false);
   };
 
   return (
@@ -51,52 +27,54 @@ const Shop = () => {
         <div className="px-6 py-6">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-yellow-300 mb-2">CARD SHOP</h1>
-            <p className="text-gray-300">Purchase card packs to expand your collection</p>
+            <h1 className="text-3xl font-bold text-white mb-2">Card Shop</h1>
+            <h2 className="text-xl font-semibold text-gray-300">Card Pack</h2>
           </div>
 
-          {/* Pack Cards */}
-          <div className="space-y-6">
-            {packs.map((pack) => (
-              <Card 
-                key={pack.id}
-                className="bg-gradient-to-br from-white/10 via-white/5 to-black/20 backdrop-blur-sm border-2 border-white/20 hover:scale-105 transition-all duration-300 shadow-xl"
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className={`w-16 h-16 bg-gradient-to-br ${pack.color} rounded-xl flex items-center justify-center shadow-lg`}>
-                        <ShoppingBag className="w-8 h-8 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-white">{pack.name}</h3>
-                        <p className="text-gray-300">{pack.description}</p>
-                        <div className="flex items-center space-x-2 mt-1">
-                          <span className="text-sm text-yellow-300">{pack.cards} Cards</span>
-                          <span className="text-sm text-gray-400">•</span>
-                          <span className="text-sm text-purple-300">{pack.rarity}</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-yellow-300 mb-3">{pack.price}</p>
-                      <Button 
-                        onClick={() => handleBuyPack(pack)}
-                        className={`bg-gradient-to-r ${pack.color} hover:scale-110 transition-all duration-200 text-white font-bold px-6 py-3 rounded-xl shadow-lg`}
-                      >
-                        <Zap className="w-4 h-4 mr-2" />
-                        Buy Now
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          {/* Single Pack Card */}
+          <div className="max-w-sm mx-auto">
+            <Card className="bg-gradient-to-br from-purple-600/30 via-purple-500/20 to-blue-600/30 backdrop-blur-sm border-2 border-white/20 shadow-2xl">
+              <CardContent className="p-8 text-center">
+                {/* Pack Icon */}
+                <div className="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border-2 border-white/30">
+                  <Package className="w-12 h-12 text-white" />
+                </div>
+                
+                {/* Pack Info */}
+                <h3 className="text-2xl font-bold text-white mb-2">Basic Pack</h3>
+                <p className="text-gray-300 mb-6">Get 3 random cards</p>
+                
+                {/* Price */}
+                <div className="mb-6">
+                  <p className="text-4xl font-bold text-white">0.1 XLM</p>
+                </div>
+                
+                {/* Buy Button */}
+                <Button 
+                  onClick={handleBuyPack}
+                  className="w-full bg-transparent border-2 border-white text-white hover:bg-white hover:text-purple-900 transition-all duration-200 text-lg font-bold py-4 rounded-full"
+                >
+                  BUY NOW
+                </Button>
+              </CardContent>
+            </Card>
           </div>
+
+          {/* How it works */}
+          <Card className="mt-8 bg-white/10 backdrop-blur-sm border border-white/20">
+            <CardContent className="p-6">
+              <h3 className="text-xl font-bold text-white mb-4">How it works</h3>
+              <div className="space-y-2 text-white">
+                <p>• Each pack contains 3 random cards</p>
+                <p>• Cards can be duplicates</p>
+                <p>• Collect card sets to earn XLM rewards</p>
+                <p>• Check the Card Sets tab for available sets</p>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Balance Info */}
-          <Card className="mt-8 bg-white/10 backdrop-blur-sm border border-white/20">
+          <Card className="mt-6 bg-white/10 backdrop-blur-sm border border-white/20">
             <CardContent className="p-4 text-center">
               <p className="text-gray-300">
                 Your balance: <span className="text-yellow-300 font-bold">{xlmBalance} XLM</span>
@@ -107,6 +85,8 @@ const Shop = () => {
       </div>
 
       <BottomNav />
+      
+      {showChestOpening && <ChestOpening onClose={handleCloseChest} />}
     </div>
   );
 };

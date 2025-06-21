@@ -4,19 +4,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import GameHeader from "@/components/GameHeader";
 import QuickActions from "@/components/QuickActions";
 import BottomNav from "@/components/BottomNav";
-import ChestOpening from "@/components/ChestOpening";
 
 const Index = () => {
   const [xlmBalance] = useState(1250.75);
-  const [showChestOpening, setShowChestOpening] = useState(false);
-
-  const handleOpenChest = () => {
-    setShowChestOpening(true);
-  };
-
-  const handleCloseChest = () => {
-    setShowChestOpening(false);
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
@@ -38,7 +28,7 @@ const Index = () => {
           {/* Quick Actions */}
           <div>
             <h3 className="text-xl font-bold text-yellow-300 mb-4 text-center">QUICK ACTIONS</h3>
-            <QuickActions onOpenChest={handleOpenChest} />
+            <QuickActions onOpenChest={() => {}} />
           </div>
 
           {/* How to Play Instructions */}
@@ -72,8 +62,6 @@ const Index = () => {
       </div>
 
       <BottomNav />
-      
-      {showChestOpening && <ChestOpening onClose={handleCloseChest} />}
     </div>
   );
 };

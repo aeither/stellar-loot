@@ -1,30 +1,33 @@
 
 import { ShoppingBag, Eye, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface QuickActionsProps {
   onOpenChest: () => void;
 }
 
 const QuickActions = ({ onOpenChest }: QuickActionsProps) => {
+  const navigate = useNavigate();
+
   const actions = [
     {
       icon: ShoppingBag,
       label: "BUY PACK",
       color: "from-purple-600 to-blue-600",
-      onClick: () => console.log("Buy pack for 0.1 XLM")
+      onClick: () => navigate("/shop")
     },
     {
       icon: Eye,
       label: "COLLECTION",
       color: "from-emerald-600 to-teal-600",
-      onClick: () => console.log("View collection")
+      onClick: () => navigate("/cards")
     },
     {
       icon: Gift,
       label: "REWARDS", 
       color: "from-orange-600 to-red-600",
-      onClick: onOpenChest
+      onClick: () => navigate("/rewards")
     }
   ];
 
