@@ -1,12 +1,8 @@
 
 import { useState } from "react";
-import { Zap } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import GameHeader from "@/components/GameHeader";
 import QuickActions from "@/components/QuickActions";
-import CollectionPreview from "@/components/CollectionPreview";
-import RewardCards from "@/components/RewardCards";
 import BottomNav from "@/components/BottomNav";
 import ChestOpening from "@/components/ChestOpening";
 
@@ -72,9 +68,6 @@ const Index = () => {
               </div>
             </CardContent>
           </Card>
-
-          {/* Collection Preview */}
-          <CollectionPreview />
         </div>
       </div>
 
