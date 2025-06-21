@@ -10,14 +10,13 @@ interface GameHeaderProps {
 
 const GameHeader = ({ xlmBalance, notifications }: GameHeaderProps) => {
   return (
-    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-black/40 via-purple-900/40 to-black/40 backdrop-blur-lg border-b border-purple-500/30 shadow-2xl">
+    <div className="flex items-center justify-between p-3 bg-gradient-to-r from-black/40 via-purple-900/40 to-black/40 backdrop-blur-lg border-b border-purple-500/30 shadow-2xl">
       <div className="flex items-center space-x-3">
-        <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 rounded-full flex items-center justify-center font-bold text-black text-xl shadow-2xl border-3 border-yellow-300 transform hover:scale-110 transition-transform duration-200">
+        <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 rounded-full flex items-center justify-center font-bold text-black text-lg shadow-2xl border-3 border-yellow-300 transform hover:scale-110 transition-transform duration-200">
           🎰
         </div>
         <div>
-          <h2 className="font-bold text-white text-lg drop-shadow-lg">TriviaRush Casino</h2>
-          <p className="text-sm text-yellow-300 drop-shadow-md">🏆 High Roller - Level 15</p>
+          <h2 className="font-bold text-white text-lg drop-shadow-lg">Stellar Loot</h2>
         </div>
       </div>
       
