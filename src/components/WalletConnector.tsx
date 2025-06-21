@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useStellarWallet } from "@/hooks/useStellarWallet";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,7 @@ const WalletConnector = () => {
           className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
         >
           <Wallet className="w-4 h-4 mr-2" />
-          Connect Wallet
+          Connect Freighter
         </Button>
       ) : (
         <div className="flex items-center space-x-3">
@@ -47,4 +48,4 @@ const WalletConnector = () => {
   );
 };
 
-export default WalletConnector; 
+export default WalletConnector;

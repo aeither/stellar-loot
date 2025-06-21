@@ -1,8 +1,8 @@
+
 import { useEffect, useState } from "react";
 import {
   FREIGHTER_ID,
   FreighterModule,
-  xBullModule,
   StellarWalletsKit,
   WalletNetwork,
 } from "@creit.tech/stellar-wallets-kit";
@@ -16,7 +16,7 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
     const kit = new StellarWalletsKit({
       network,
       selectedWalletId: FREIGHTER_ID,
-      modules: [new xBullModule(), new FreighterModule()],
+      modules: [new FreighterModule()],
     });
     setWalletKit(kit);
 
@@ -105,4 +105,4 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
     signTransaction,
     signMessage
   };
-}; 
+};

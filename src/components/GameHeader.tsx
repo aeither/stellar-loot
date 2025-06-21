@@ -1,5 +1,5 @@
-import { Bell, Wallet } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+
+import { Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -36,19 +36,6 @@ const GameHeader = ({ xlmBalance, notifications }: GameHeaderProps) => {
           className="text-white hover:bg-white/20 p-3 rounded-full bg-gradient-to-br from-blue-600/50 to-cyan-600/50 border border-blue-400/30 shadow-lg transform hover:scale-110 transition-all duration-200"
         >
           <Wallet className="w-6 h-6 drop-shadow-lg" />
-        </Button>
-        
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className="relative text-white hover:bg-white/20 p-3 rounded-full bg-gradient-to-br from-purple-600/50 to-indigo-600/50 border border-purple-400/30 shadow-lg transform hover:scale-110 transition-all duration-200"
-        >
-          <Bell className="w-6 h-6 drop-shadow-lg" />
-          {notifications > 0 && (
-            <Badge className="absolute -top-1 -right-1 w-6 h-6 p-0 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-xs flex items-center justify-center min-w-6 animate-pulse shadow-xl border-2 border-white">
-              {notifications}
-            </Badge>
-          )}
         </Button>
       </div>
     </div>

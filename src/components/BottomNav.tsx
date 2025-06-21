@@ -1,4 +1,4 @@
-import { Home, CreditCard, Trophy, ShoppingBag, Wallet } from "lucide-react";
+import { Home, CreditCard, Trophy, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -10,8 +10,7 @@ const BottomNav = () => {
     { icon: Home, path: "/", label: "Home" },
     { icon: CreditCard, path: "/cards", label: "Cards" },
     { icon: ShoppingBag, path: "/shop", label: "Shop" },
-    { icon: Trophy, path: "/rewards", label: "Rewards" },
-    { icon: Wallet, path: "/wallet", label: "Wallet" }
+    { icon: Trophy, path: "/rewards", label: "Rewards" }
   ];
 
   return (
