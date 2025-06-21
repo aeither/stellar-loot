@@ -1,31 +1,35 @@
 
 import { Home, Users, Trophy, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const BottomNav = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const navItems = [
-    { icon: Home, label: "HOME", active: true },
-    { icon: Users, label: "CARDS" },
-    { icon: Settings, label: "SHOP" },
-    { icon: Trophy, label: "REWARDS" }
+    { icon: Home, path: "/" },
+    { icon: Users, path: "/cards" },
+    { icon: Settings, path: "/shop" },
+    { icon: Trophy, path: "/rewards" }
   ];
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-xl border-t border-gray-700 z-50">
-      <div className="flex items-center justify-around py-3">
+      <div className="flex items-center justify-around py-4">
         {navItems.map((item, index) => (
           <Button
             key={index}
             variant="ghost"
             size="sm"
-            className={`flex flex-col items-center space-y-1 h-auto py-2 px-3 ${
-              item.active 
-                ? 'text-yellow-400' 
+            onClick={() => navigate(item.path)}
+            className={`p-3 rounded-full ${
+              location.pathname === item.path
+                ? 'text-yellow-400 bg-yellow-400/20' 
                 : 'text-gray-400 hover:text-white'
-            } rounded-xl`}
+            }`}
           >
             <item.icon className="w-6 h-6" />
-            <span className="text-xs font-medium">{item.label}</span>
           </Button>
         ))}
       </div>
