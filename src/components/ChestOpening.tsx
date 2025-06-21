@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Sparkles, Star, Gem } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,7 +10,9 @@ interface ChestOpeningProps {
 }
 
 const ChestOpening = ({ onClose }: ChestOpeningProps) => {
-  const [chestState, setChestState] = useState<'closed' | 'opening' | 'opened' | 'rewards'>('closed');
+  const [chestState, setChestState] = useState<'closed' | 'opening' | 'opened' | 'revealing' | 'rewards'>('closed');
+  const [currentRewardIndex, setCurrentRewardIndex] = useState(-1);
+  const [revealedRewards, setRevealedRewards] = useState<number[]>([]);
 
   const rewards = [
     { type: 'card', name: 'Lightning Bolt', rarity: 'Epic', color: 'from-purple-500 to-blue-500', icon: Sparkles },
@@ -23,14 +25,43 @@ const ChestOpening = ({ onClose }: ChestOpeningProps) => {
     if (chestState === 'closed') {
       setChestState('opening');
       setTimeout(() => setChestState('opened'), 1000);
-      setTimeout(() => setChestState('rewards'), 2000);
+      setTimeout(() => {
+        setChestState('revealing');
+        setCurrentRewardIndex(0);
+      }, 2000);
     } else if (chestState === 'opened') {
-      setChestState('rewards');
+      setChestState('revealing');
+      setCurrentRewardIndex(0);
     }
   };
 
+  // Auto-reveal rewards one by one
+  useEffect(() => {
+    if (chestState === 'revealing' && currentRewardIndex >= 0 && currentRewardIndex < rewards.length) {
+      const timer = setTimeout(() => {
+        setRevealedRewards(prev => [...prev, currentRewardIndex]);
+        
+        if (currentRewardIndex < rewards.length - 1) {
+          setCurrentRewardIndex(currentRewardIndex + 1);
+        } else {
+          // All rewards revealed, show final state
+          setTimeout(() => {
+            setChestState('rewards');
+          }, 1500);
+        }
+      }, 1500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [chestState, currentRewardIndex, rewards.length]);
+
   const handleContinue = () => {
     onClose();
+  };
+
+  const handleSkip = () => {
+    setRevealedRewards(rewards.map((_, index) => index));
+    setChestState('rewards');
   };
 
   return (
@@ -46,8 +77,20 @@ const ChestOpening = ({ onClose }: ChestOpeningProps) => {
           <X className="w-5 h-5" />
         </Button>
 
+        {/* Skip button during revealing */}
+        {chestState === 'revealing' && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleSkip}
+            className="absolute top-4 left-4 z-10 text-yellow-300 hover:bg-yellow-400/20 rounded-full px-4 py-2 text-sm font-bold"
+          >
+            Skip ⚡
+          </Button>
+        )}
+
         {/* Chest Animation */}
-        {chestState !== 'rewards' && (
+        {chestState !== 'rewards' && chestState !== 'revealing' && (
           <div className="text-center">
             <div
               onClick={handleChestClick}
@@ -111,13 +154,76 @@ const ChestOpening = ({ onClose }: ChestOpeningProps) => {
           </div>
         )}
 
-        {/* Rewards Display */}
+        {/* Individual Reward Reveal */}
+        {chestState === 'revealing' && currentRewardIndex >= 0 && (
+          <div className="text-center">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-yellow-300 mb-2">🎉 New Reward! 🎉</h2>
+              <p className="text-gray-300">Reward {currentRewardIndex + 1} of {rewards.length}</p>
+            </div>
+
+            {/* Current Reward Display */}
+            <div className="relative mx-auto w-64 h-80 mb-6">
+              <Card className="w-full h-full bg-gradient-to-br from-purple-900/90 to-indigo-900/90 backdrop-blur-sm border-4 border-yellow-400/70 shadow-2xl animate-scale-in relative overflow-hidden">
+                {/* Sparkle effects around the card */}
+                <Sparkles className="absolute -top-6 -left-6 w-8 h-8 text-yellow-300 animate-spin" />
+                <Sparkles className="absolute -top-6 -right-6 w-6 h-6 text-pink-300 animate-spin delay-300" />
+                <Sparkles className="absolute -bottom-6 -left-6 w-6 h-6 text-blue-300 animate-spin delay-700" />
+                <Sparkles className="absolute -bottom-6 -right-6 w-8 h-8 text-purple-300 animate-spin delay-500" />
+                
+                <CardContent className="p-8 flex flex-col items-center justify-center h-full relative z-10">
+                  {rewards[currentRewardIndex].type === 'card' ? (
+                    <>
+                      <div className={`w-24 h-24 bg-gradient-to-br ${rewards[currentRewardIndex].color} rounded-2xl flex items-center justify-center mb-4 shadow-2xl border-4 border-white/30 animate-pulse`}>
+                        <rewards[currentRewardIndex].icon className="w-12 h-12 text-white drop-shadow-lg" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-2">{rewards[currentRewardIndex].name}</h3>
+                      <Badge className={`text-lg px-4 py-2 ${
+                        rewards[currentRewardIndex].rarity === 'Legendary' ? 'bg-gradient-to-r from-orange-500 to-red-500' :
+                        rewards[currentRewardIndex].rarity === 'Epic' ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 
+                        'bg-gradient-to-r from-blue-500 to-cyan-500'
+                      } animate-pulse`}>
+                        {rewards[currentRewardIndex].rarity}
+                      </Badge>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mb-4 shadow-2xl border-4 border-white/30 animate-pulse">
+                        <rewards[currentRewardIndex].icon className="w-12 h-12 text-white drop-shadow-lg" />
+                      </div>
+                      <h3 className="text-3xl font-bold text-white mb-2">+{rewards[currentRewardIndex].amount} XLM</h3>
+                      <p className="text-lg text-yellow-300">Stellar Lumens</p>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Progress dots */}
+            <div className="flex justify-center space-x-2 mb-4">
+              {rewards.map((_, index) => (
+                <div
+                  key={index}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    revealedRewards.includes(index) 
+                      ? 'bg-green-400 shadow-lg' 
+                      : index === currentRewardIndex 
+                        ? 'bg-yellow-400 animate-pulse shadow-lg' 
+                        : 'bg-gray-600'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Final Rewards Display */}
         {chestState === 'rewards' && (
           <Card className="bg-gradient-to-br from-purple-900/90 to-indigo-900/90 backdrop-blur-sm border-2 border-yellow-400/50 shadow-2xl">
             <CardContent className="p-6">
               <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-yellow-300 mb-2">🎉 Rewards Obtained! 🎉</h2>
-                <p className="text-gray-300">Here's what you got:</p>
+                <h2 className="text-2xl font-bold text-yellow-300 mb-2">🎉 All Rewards Obtained! 🎉</h2>
+                <p className="text-gray-300">Here's your complete haul:</p>
               </div>
 
               <div className="space-y-3 mb-6">
@@ -125,12 +231,12 @@ const ChestOpening = ({ onClose }: ChestOpeningProps) => {
                   <Card 
                     key={index} 
                     className="bg-white/10 backdrop-blur-sm border-0 animate-fade-in"
-                    style={{ animationDelay: `${index * 200}ms` }}
+                    style={{ animationDelay: `${index * 100}ms` }}
                   >
                     <CardContent className="p-3 flex items-center space-x-3">
                       {reward.type === 'card' ? (
                         <>
-                          <div className={`w-12 h-12 bg-gradient-to-br ${reward.color} rounded-lg flex items-center justify-center`}>
+                          <div className={`w-12 h-12 bg-gradient-to-br ${reward.color} rounded-lg flex items-center justify-center shadow-xl border-2 border-white/30`}>
                             <reward.icon className="w-6 h-6 text-white" />
                           </div>
                           <div className="flex-1">
@@ -145,7 +251,7 @@ const ChestOpening = ({ onClose }: ChestOpeningProps) => {
                         </>
                       ) : (
                         <>
-                          <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
+                          <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center shadow-xl border-2 border-white/30">
                             <reward.icon className="w-6 h-6 text-white" />
                           </div>
                           <div className="flex-1">
@@ -161,7 +267,7 @@ const ChestOpening = ({ onClose }: ChestOpeningProps) => {
 
               <Button 
                 onClick={handleContinue}
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 shadow-lg"
+                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 shadow-lg transform hover:scale-105 transition-all duration-200"
               >
                 Continue to Collection
               </Button>
