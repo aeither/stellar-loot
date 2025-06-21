@@ -22,7 +22,7 @@ const QuickActions = ({ onOpenChest }: QuickActionsProps) => {
     },
     {
       icon: Gift,
-      label: "REWARDS",
+      label: "REWARDS", 
       color: "from-orange-600 to-red-600",
       onClick: onOpenChest
     }
@@ -30,26 +30,28 @@ const QuickActions = ({ onOpenChest }: QuickActionsProps) => {
 
   return (
     <div className="grid grid-cols-2 gap-4">
-      {actions.slice(0, 2).map((action, index) => (
-        <Button
-          key={index}
-          onClick={action.onClick}
-          className={`h-24 bg-gradient-to-br ${action.color} hover:scale-105 transition-all duration-200 flex-col space-y-3 rounded-2xl border-0`}
-        >
-          <action.icon className="w-8 h-8 text-white" />
-          <span className="text-sm font-bold text-white">
-            {action.label}
-          </span>
-        </Button>
-      ))}
+      {actions.slice(0, 2).map((action, index) => {
+        const IconComponent = action.icon;
+        return (
+          <Button
+            key={index}
+            onClick={action.onClick}
+            className={`h-24 bg-gradient-to-br ${action.color} hover:scale-105 transition-all duration-200 flex-col space-y-3 rounded-2xl border-0`}
+          >
+            <IconComponent className="w-8 h-8 text-white" />
+            <span className="text-sm font-bold text-white">
+              {action.label}
+            </span>
+          </Button>
+        );
+      })}
       
-      {/* Rewards button spans full width */}
       <div className="col-span-2">
         <Button
           onClick={actions[2].onClick}
           className={`w-full h-24 bg-gradient-to-br ${actions[2].color} hover:scale-105 transition-all duration-200 flex-col space-y-3 rounded-2xl border-0`}
         >
-          <actions[2].icon className="w-8 h-8 text-white" />
+          <Gift className="w-8 h-8 text-white" />
           <span className="text-sm font-bold text-white">
             {actions[2].label}
           </span>
