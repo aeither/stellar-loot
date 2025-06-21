@@ -1,54 +1,60 @@
 
-import { ShoppingBag, Eye, Gift, Plus } from "lucide-react";
+import { ShoppingBag, Eye, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface QuickActionsProps {
-  newRewards: number;
   onOpenChest: () => void;
 }
 
-const QuickActions = ({ newRewards, onOpenChest }: QuickActionsProps) => {
+const QuickActions = ({ onOpenChest }: QuickActionsProps) => {
   const actions = [
     {
       icon: ShoppingBag,
-      label: "Buy Pack",
-      color: "from-purple-600 to-purple-800",
+      label: "BUY PACK",
+      color: "from-purple-600 to-blue-600",
       onClick: () => console.log("Buy pack for 0.1 XLM")
     },
     {
       icon: Eye,
-      label: "Collection",
-      color: "from-blue-600 to-blue-800",
+      label: "COLLECTION",
+      color: "from-emerald-600 to-teal-600",
       onClick: () => console.log("View collection")
     },
     {
       icon: Gift,
-      label: "Rewards",
-      color: "from-emerald-600 to-emerald-800",
+      label: "REWARDS",
+      color: "from-orange-600 to-red-600",
       onClick: onOpenChest
-    },
-    {
-      icon: Plus,
-      label: "More",
-      color: "from-orange-600 to-orange-800",
-      onClick: () => console.log("More options")
     }
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-3">
-      {actions.map((action, index) => (
+    <div className="grid grid-cols-2 gap-4">
+      {actions.slice(0, 2).map((action, index) => (
         <Button
           key={index}
           onClick={action.onClick}
-          className={`h-20 bg-gradient-to-br ${action.color} hover:scale-105 transition-all duration-200 flex-col space-y-2`}
+          className={`h-24 bg-gradient-to-br ${action.color} hover:scale-105 transition-all duration-200 flex-col space-y-3 rounded-2xl border-0`}
         >
-          <action.icon className="w-6 h-6 text-white" />
-          <span className="text-xs font-bold text-white">
+          <action.icon className="w-8 h-8 text-white" />
+          <span className="text-sm font-bold text-white">
             {action.label}
           </span>
         </Button>
       ))}
+      
+      {/* Rewards button spans full width */}
+      <div className="col-span-2">
+        <Button
+          onClick={actions[2].onClick}
+          className={`w-full h-24 bg-gradient-to-br ${actions[2].color} hover:scale-105 transition-all duration-200 flex-col space-y-3 rounded-2xl border-0`}
+        >
+          <actions[2].icon className="w-8 h-8 text-white" />
+          <span className="text-sm font-bold text-white">
+            {actions[2].label}
+          </span>
+        </Button>
+      </div>
     </div>
   );
 };
