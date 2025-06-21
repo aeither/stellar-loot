@@ -22,31 +22,7 @@ This repository uses the recommended structure for a Soroban project:
 
 # Guide
 
-stellar keys generate alice --network testnet
-
 stellar contract init hello-world
 
 stellar contract build
 
-stellar contract deploy \
-  --wasm target/wasm32v1-none/release/hello_world.wasm \
-  --source alice \
-  --network testnet \
-  --alias hello_world
-
-stellar contract bindings typescript \
-  --contract-id hello_world \
-  --network testnet \
-  --output-dir bindings
-
-stellar contract bindings typescript \
-  --contract-id hello_world \
-  --network testnet \
-  --output-dir bindings
-
-in "bindings" to build the JavaScript NPM package.
-  npm install && npm run build
-
-add to frontend package.json
-    "hello_world": "file:./contract/bindings",
-** update the package name inside binding to match frontend import

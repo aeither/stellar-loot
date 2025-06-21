@@ -8,7 +8,6 @@ import Cards from "./pages/Cards";
 import Shop from "./pages/Shop";
 import Rewards from "./pages/Rewards";
 import Wallet from "./pages/Wallet";
-import Test from "./pages/Test";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,7 +24,6 @@ const App = () => (
           <Route path="/shop" element={<Shop />} />
           <Route path="/rewards" element={<Rewards />} />
           <Route path="/wallet" element={<Wallet />} />
-          <Route path="/test" element={<Test />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
