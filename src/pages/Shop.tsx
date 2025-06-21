@@ -33,7 +33,7 @@ const Shop = () => {
 
           {/* Single Pack Card */}
           <div className="max-w-sm mx-auto">
-            <Card className="bg-gradient-to-br from-purple-600/30 via-purple-500/20 to-blue-600/30 backdrop-blur-sm border-2 border-white/20 shadow-2xl">
+            <Card className="bg-gradient-to-br from-purple-800/60 via-purple-700/50 to-indigo-800/60 backdrop-blur-sm border-2 border-purple-400/30 shadow-2xl">
               <CardContent className="p-8 text-center">
                 {/* Pack Icon */}
                 <div className="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border-2 border-white/30">
@@ -42,7 +42,7 @@ const Shop = () => {
                 
                 {/* Pack Info */}
                 <h3 className="text-2xl font-bold text-white mb-2">Basic Pack</h3>
-                <p className="text-gray-300 mb-6">Get 3 random cards</p>
+                <p className="text-gray-200 mb-6">Get 3 random cards</p>
                 
                 {/* Price */}
                 <div className="mb-6">
@@ -52,7 +52,7 @@ const Shop = () => {
                 {/* Buy Button */}
                 <Button 
                   onClick={handleBuyPack}
-                  className="w-full bg-transparent border-2 border-white text-white hover:bg-white hover:text-purple-900 transition-all duration-200 text-lg font-bold py-4 rounded-full"
+                  className="w-full bg-white/20 border-2 border-white/40 text-white hover:bg-white/30 hover:border-white/60 transition-all duration-200 text-lg font-bold py-4 rounded-full backdrop-blur-sm"
                 >
                   BUY NOW
                 </Button>
