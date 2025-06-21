@@ -1,5 +1,7 @@
 import WalletManager from "@/components/WalletManager";
+import StellarTest from "@/components/StellarTest";
 import BottomNav from "@/components/BottomNav";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const Wallet = () => {
   return (
@@ -18,8 +20,14 @@ const Wallet = () => {
         </div>
         
         {/* Main Content */}
-        <div className="px-6 py-6">
-          <WalletManager />
+        <div className="px-6 py-6 space-y-6">
+          <ErrorBoundary>
+            <StellarTest />
+          </ErrorBoundary>
+          
+          <ErrorBoundary>
+            <WalletManager />
+          </ErrorBoundary>
         </div>
       </div>
 

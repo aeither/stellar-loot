@@ -1,17 +1,30 @@
-
 import React from "react";
 import { useStellarWallet } from "@/hooks/useStellarWallet";
 import { Button } from "@/components/ui/button";
-import { Wallet, LogOut } from "lucide-react";
+import { Wallet, LogOut, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const WalletConnector = () => {
-  const { walletConnected, publicKey, connectWallet, disconnectWallet } = useStellarWallet();
+  const { walletConnected, publicKey, isInitializing, connectWallet, disconnectWallet } = useStellarWallet();
 
   const formatPublicKey = (key: string) => {
     if (key.length <= 12) return key;
     return `${key.slice(0, 6)}...${key.slice(-6)}`;
   };
+
+  if (isInitializing) {
+    return (
+      <div className="flex items-center space-x-3">
+        <Button 
+          disabled
+          className="bg-gradient-to-r from-gray-600 to-gray-700 text-white font-bold py-2 px-4 rounded-full shadow-lg"
+        >
+          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          Initializing...
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center space-x-3">
@@ -21,7 +34,7 @@ const WalletConnector = () => {
           className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
         >
           <Wallet className="w-4 h-4 mr-2" />
-          Connect Freighter
+          Connect Wallet
         </Button>
       ) : (
         <div className="flex items-center space-x-3">
