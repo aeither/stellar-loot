@@ -63,7 +63,7 @@ const Index = () => {
                 const signedXDR = await signTransaction(transaction);
                 const sendResponse2 = await server.submitTransaction(new Transaction(signedXDR.signedTxXdr, Networks.TESTNET));
 
-                  console.log("Transaction sent successfully:", sendResponse2);
+                  console.log("Transaction sent successfully:", sendResponse2.successful);
                   ///tercera prueba
 
                   /*
@@ -204,7 +204,7 @@ const Index = () => {
                   console.log("Read Button clicked!");
 
                   const image = await sorobanClient.tokens_of({ owner: publicKey });
-                  console.log("Token image:", image);
+                  //console.log("Token image:", image);
 
                   const res = await image.result;
                   console.log("Image response:", res);
