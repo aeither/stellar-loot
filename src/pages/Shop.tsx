@@ -90,7 +90,7 @@ const Shop = () => {
                 
                 {/* Price */}
                 <div className="mb-6">
-                  <p className="text-4xl font-bold text-white">0.1 XLM</p>
+                  <p className="text-4xl font-bold text-white">10 XLM</p>
                 </div>
                 
                 {/* Buy Button */}
