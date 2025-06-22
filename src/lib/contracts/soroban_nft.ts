@@ -1,4 +1,4 @@
-import * as Client from "soroban_nft"; // import the package we just added as a dependency
+import * as Client from "hello_world"; // import the package we just added as a dependency
 
 // instantiate and export the Client class from the bindings package
 export default new Client.Client({

@@ -1,12 +1,11 @@
 
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import BottomNav from "@/components/BottomNav";
 import GameHeader from "@/components/GameHeader";
 import QuickActions from "@/components/QuickActions";
-import BottomNav from "@/components/BottomNav";
-import sorobanClient from "../lib/contracts/soroban_nft";
+import { Card, CardContent } from "@/components/ui/card";
 import { useStellarWallet } from "@/hooks/useStellarWallet";
-import { TransactionBuilder, Networks, Operation, Keypair, Horizon, xdr, nativeToScVal, BASE_FEE } from "stellar-sdk";
+import { useState } from "react";
+import sorobanClient from "../lib/contracts/soroban_nft";
 
 const Index = () => {
   const [xlmBalance] = useState(1250.75);
