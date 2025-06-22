@@ -34,13 +34,11 @@ if (typeof window !== 'undefined') {
 export const networks = {
   testnet: {
     networkPassphrase: "Test SDF Network ; September 2015",
-
-    contractId: "CDH2OICCUXRWEY52YRRQDJBUJCKSVEN4JFUKWTLWWXXO5QLZ6Q6ZIGDQ",
-
+    contractId: "CD4N56QEYZ5IGGC72TILFR25CNNVYMBDA2OKO5DJ6JI64GWBJAYCSPQ3",
   }
 } as const
 
-export type DataKey = {tag: "Owner", values: readonly [i128]} | {tag: "TokenCount", values: void} | {tag: "TokenOwner", values: readonly [string]} | {tag: "Approvals", values: readonly [i128]};
+export type DataKey = {tag: "Owner", values: readonly [i128]} | {tag: "TokenCount", values: void} | {tag: "Approvals", values: readonly [i128]};
 
 export interface Client {
   /**
@@ -281,7 +279,7 @@ export class Client extends ContractClient {
   }
   constructor(public readonly options: ContractClientOptions) {
     super(
-      new ContractSpec([ "AAAAAgAAAAAAAAAAAAAAB0RhdGFLZXkAAAAABAAAAAEAAAAAAAAABU93bmVyAAAAAAAAAQAAAAsAAAAAAAAAAAAAAApUb2tlbkNvdW50AAAAAAABAAAAAAAAAApUb2tlbk93bmVyAAAAAAABAAAAEwAAAAEAAAAAAAAACUFwcHJvdmFscwAAAAAAAAEAAAAL",
+      new ContractSpec([ "AAAAAgAAAAAAAAAAAAAAB0RhdGFLZXkAAAAAAwAAAAEAAAAAAAAABU93bmVyAAAAAAAAAQAAAAsAAAAAAAAAAAAAAApUb2tlbkNvdW50AAAAAAABAAAAAAAAAAlBcHByb3ZhbHMAAAAAAAABAAAACw==",
         "AAAAAAAAAAAAAAAIb3duZXJfb2YAAAABAAAAAAAAAAh0b2tlbl9pZAAAAAsAAAABAAAAEw==",
         "AAAAAAAAAAAAAAAJdG9rZW5zX29mAAAAAAAAAQAAAAAAAAAFb3duZXIAAAAAAAATAAAAAQAAA+oAAAAL",
         "AAAAAAAAAAAAAAAEbmFtZQAAAAAAAAABAAAAEA==",
