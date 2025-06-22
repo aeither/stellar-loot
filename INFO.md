@@ -35,3 +35,11 @@ stellar contract invoke \
   --source-account alice \
   -- mint \
   --to GCCOBOTHO6DFOTQ6PELRDG3GG4TDDNQL7KMJSHZOMGIVPTWJJGZY4ERO
+
+# A command
+
+stellar contract bindings typescript   --network testnet   --contract-id CD4N56QEYZ5IGGC72TILFR25CNNVYMBDA2OKO5DJ6JI64GWBJAYCSPQ3   --output-dir packages/soroban_nft
+
+npm install && npm run build
+
+npm add file:./packages/soroban_nft
