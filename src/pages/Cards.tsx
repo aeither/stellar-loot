@@ -4,10 +4,24 @@ import GameHeader from "@/components/GameHeader";
 import BottomNav from "@/components/BottomNav";
 import { useStellarWallet } from "@/hooks/useStellarWallet";
 
+interface CardItem {
+  id: number;
+  name: string;
+  image: string;
+  quantity: number;
+}
+
+interface GroupedCard {
+  id: string;
+  name: string;
+  image: string;
+  quantity: number;
+}
+
 const Cards = () => {
   const { xlmBalance, isLoadingBalance } = useStellarWallet();
   
-  const cards = [
+  const cards: CardItem[] = [
     { 
       id: 1, 
       name: "Tomato", 
@@ -46,7 +60,23 @@ const Cards = () => {
     }
   ];
 
-  const totalCards = cards.reduce((sum, card) => sum + card.quantity, 0);
+  // Group cards by name and aggregate quantities
+  const groupedCards: GroupedCard[] = cards.reduce((acc, card) => {
+    const existingCard = acc.find(c => c.name === card.name);
+    if (existingCard) {
+      existingCard.quantity += card.quantity;
+    } else {
+      acc.push({ 
+        id: card.name, // Use name as unique ID
+        name: card.name, 
+        image: card.image, 
+        quantity: card.quantity 
+      });
+    }
+    return acc;
+  }, [] as GroupedCard[]);
+
+  const totalCards = groupedCards.reduce((sum, card) => sum + card.quantity, 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
@@ -57,14 +87,19 @@ const Cards = () => {
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-3xl font-bold text-yellow-300 drop-shadow-lg">MY COLLECTION</h1>
-            <div className="bg-gradient-to-r from-yellow-400 to-orange-400 text-black px-4 py-2 rounded-full font-bold shadow-lg border-2 border-yellow-300">
-              {totalCards} Cards
+            <div className="flex flex-col items-end space-y-1">
+              <div className="bg-gradient-to-r from-yellow-400 to-orange-400 text-black px-4 py-2 rounded-full font-bold shadow-lg border-2 border-yellow-300">
+                {totalCards} Cards
+              </div>
+              <div className="text-sm text-gray-300">
+                {groupedCards.length} Unique Cards
+              </div>
             </div>
           </div>
 
           {/* Cards Grid */}
           <div className="grid grid-cols-2 gap-4">
-            {cards.map((card) => (
+            {groupedCards.map((card) => (
               <Card 
                 key={card.id}
                 className="bg-gradient-to-br from-slate-800/90 via-slate-700/80 to-slate-900/90 backdrop-blur-sm border-2 border-slate-600/50 hover:border-yellow-400/60 hover:scale-105 transition-all duration-300 cursor-pointer shadow-2xl relative overflow-hidden"
