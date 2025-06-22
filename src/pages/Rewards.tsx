@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,42 +10,39 @@ const Rewards = () => {
   
   const cardSets = [
     {
-      title: "Space Adventure Set",
+      title: "Fresh Vegetables Set",
       reward: "5 XLM",
       status: "ready", // ready, incomplete, claimed
       requiredCards: [
-        { name: "Saturn", collected: false },
-        { name: "Galaxy", collected: true },
-        { name: "Astronaut", collected: true }
+        { name: "Tomato", image: "/images/tomato.jpeg", collected: true },
+        { name: "Eggplant", image: "/images/eggplant.jpeg", collected: true }
       ]
     },
     {
-      title: "City Life Set", 
+      title: "Garden Salad Set", 
       reward: "4 XLM",
       status: "incomplete",
       requiredCards: [
-        { name: "Skyscraper", collected: false },
-        { name: "Street Art", collected: true },
-        { name: "Traffic", collected: true }
+        { name: "Tomato", image: "/images/tomato.jpeg", collected: true },
+        { name: "Cucumber", image: "/images/cucumber.jpeg", collected: false }
       ]
     },
     {
-      title: "Ocean Explorer Set",
-      reward: "2 XLM", 
+      title: "Purple Harvest Set",
+      reward: "3 XLM", 
       status: "claimed",
       requiredCards: [
-        { name: "Blue Whale", collected: true },
-        { name: "Coral Reef", collected: true }
+        { name: "Eggplant", image: "/images/eggplant.jpeg", collected: true },
+        { name: "Cucumber", image: "/images/cucumber.jpeg", collected: true }
       ]
     },
     {
-      title: "Nature Collection",
-      reward: "3 XLM",
+      title: "Red & Green Set",
+      reward: "2 XLM",
       status: "incomplete", 
       requiredCards: [
-        { name: "Forest", collected: false },
-        { name: "Mountain", collected: false },
-        { name: "River", collected: true }
+        { name: "Tomato", image: "/images/tomato.jpeg", collected: true },
+        { name: "Cucumber", image: "/images/cucumber.jpeg", collected: false }
       ]
     }
   ];
@@ -89,10 +85,18 @@ const Rewards = () => {
                       
                       <p className="text-gray-300 mb-4">Required Cards:</p>
                       
-                      <div className="grid grid-cols-3 gap-3 mb-6">
+                      <div className="grid grid-cols-2 gap-3 mb-6">
                         {set.requiredCards.map((card, cardIndex) => (
-                          <div key={cardIndex} className={`aspect-square rounded-lg flex items-center justify-center ${card.collected ? 'bg-gradient-to-br from-blue-500 to-teal-500' : 'bg-gray-600/50 border-2 border-dashed border-gray-500'}`}>
-                            <span className="text-white font-semibold text-center text-sm">{card.name}</span>
+                          <div key={cardIndex} className={`aspect-square rounded-lg flex items-center justify-center overflow-hidden ${card.collected ? 'bg-gradient-to-br from-blue-500 to-teal-500' : 'bg-gray-600/50 border-2 border-dashed border-gray-500'}`}>
+                            {card.collected ? (
+                              <img 
+                                src={card.image} 
+                                alt={card.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <span className="text-white font-semibold text-center text-sm">{card.name}</span>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -123,10 +127,18 @@ const Rewards = () => {
                     
                     <p className="text-gray-300 mb-4">Required Cards:</p>
                     
-                    <div className="grid grid-cols-3 gap-3 mb-6">
+                    <div className="grid grid-cols-2 gap-3 mb-6">
                       {set.requiredCards.map((card, cardIndex) => (
-                        <div key={cardIndex} className={`aspect-square rounded-lg flex items-center justify-center ${card.collected ? 'bg-gradient-to-br from-blue-500 to-teal-500' : 'bg-gray-600/50 border-2 border-dashed border-gray-500'}`}>
-                          <span className="text-white font-semibold text-center text-sm">{card.name}</span>
+                        <div key={cardIndex} className={`aspect-square rounded-lg flex items-center justify-center overflow-hidden ${card.collected ? 'bg-gradient-to-br from-blue-500 to-teal-500' : 'bg-gray-600/50 border-2 border-dashed border-gray-500'}`}>
+                          {card.collected ? (
+                            <img 
+                              src={card.image} 
+                              alt={card.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-white font-semibold text-center text-sm">{card.name}</span>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -159,8 +171,16 @@ const Rewards = () => {
                       
                       <div className="grid grid-cols-2 gap-3 mb-6">
                         {set.requiredCards.map((card, cardIndex) => (
-                          <div key={cardIndex} className="aspect-square rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-teal-500">
-                            <span className="text-white font-semibold text-center text-sm">{card.name}</span>
+                          <div key={cardIndex} className={`aspect-square rounded-lg flex items-center justify-center overflow-hidden ${card.collected ? 'bg-gradient-to-br from-blue-500 to-teal-500' : 'bg-gray-600/50 border-2 border-dashed border-gray-500'}`}>
+                            {card.collected ? (
+                              <img 
+                                src={card.image} 
+                                alt={card.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <span className="text-white font-semibold text-center text-sm">{card.name}</span>
+                            )}
                           </div>
                         ))}
                       </div>
