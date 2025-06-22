@@ -20,6 +20,11 @@ This repository uses the recommended structure for a Soroban project:
 - Contracts should have their own `Cargo.toml` files that rely on the top-level `Cargo.toml` workspace for their dependencies.
 - Frontend libraries can be added to the top-level directory as well. If you initialized this project with a frontend template via `--frontend-template` you will have those files already included.
 
+# Faucet
+
+fund account
+https://friendbot.stellar.org/?addr=
+
 # Guide
 
 stellar keys generate alice --network testnet
@@ -33,11 +38,6 @@ stellar contract deploy \
   --source alice \
   --network testnet \
   --alias hello_world
-
-stellar contract bindings typescript \
-  --contract-id hello_world \
-  --network testnet \
-  --output-dir bindings
 
 stellar contract bindings typescript \
   --contract-id hello_world \
