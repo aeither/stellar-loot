@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import GameHeader from "@/components/GameHeader";
 import QuickActions from "@/components/QuickActions";
-import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useStellarWallet } from "@/hooks/useStellarWallet";
 import { TransactionBuilder, Networks, Operation, Keypair, Horizon, xdr, nativeToScVal, BASE_FEE, Asset, Transaction } from "@stellar/stellar-sdk";
 import sorobanClient from "../lib/contracts/soroban_nft";
+import BottomNav from "@/components/BottomNav";
 
 const Index = () => {
   const { walletConnected, publicKey, isInitializing, signTransaction, signMessage, getBalance } = useStellarWallet();
@@ -22,10 +22,10 @@ const Index = () => {
         console.error("Error fetching balance:", error);
       }
     };
-  
+
     fetchBalance();
   }, [getBalance]);
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
       <div className="relative z-10 pb-24">
