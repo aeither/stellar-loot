@@ -34,7 +34,7 @@ if (typeof window !== 'undefined') {
 export const networks = {
   testnet: {
     networkPassphrase: "Test SDF Network ; September 2015",
-    contractId: "CDH2OICCUXRWEY52YRRQDJBUJCKSVEN4JFUKWTLWWXXO5QLZ6Q6ZIGDQ",
+    contractId: "CDWSOPCLG6Y74TRKEI5QOJIT65BV3K6WSSAKBQZ4CXMZANXMFPVNUNB3",
   }
 } as const
 
@@ -219,7 +219,7 @@ export interface Client {
      * Whether to automatically simulate the transaction when constructing the AssembledTransaction. Default: true
      */
     simulate?: boolean;
-  }) => Promise<AssembledTransaction<null>>
+  }) => Promise<AssembledTransaction<i128>>
 
   /**
    * Construct and simulate a approve transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
@@ -288,7 +288,7 @@ export class Client extends ContractClient {
         "AAAAAAAAAAAAAAALdG9rZW5faW1hZ2UAAAAAAAAAAAEAAAAQ",
         "AAAAAAAAAAAAAAALaXNfYXBwcm92ZWQAAAAAAgAAAAAAAAAIb3BlcmF0b3IAAAATAAAAAAAAAAh0b2tlbl9pZAAAAAsAAAABAAAAAQ==",
         "AAAAAAAAAAAAAAAIdHJhbnNmZXIAAAADAAAAAAAAAAVvd25lcgAAAAAAABMAAAAAAAAAAnRvAAAAAAATAAAAAAAAAAh0b2tlbl9pZAAAAAsAAAAA",
-        "AAAAAAAAAAAAAAAEbWludAAAAAEAAAAAAAAAAnRvAAAAAAATAAAAAA==",
+        "AAAAAAAAAAAAAAAEbWludAAAAAEAAAAAAAAAAnRvAAAAAAATAAAAAQAAAAs=",
         "AAAAAAAAAAAAAAAHYXBwcm92ZQAAAAADAAAAAAAAAAVvd25lcgAAAAAAABMAAAAAAAAAAnRvAAAAAAATAAAAAAAAAAh0b2tlbl9pZAAAAAsAAAAA",
         "AAAAAAAAAAAAAAANdHJhbnNmZXJfZnJvbQAAAAAAAAQAAAAAAAAAB3NwZW5kZXIAAAAAEwAAAAAAAAAEZnJvbQAAABMAAAAAAAAAAnRvAAAAAAATAAAAAAAAAAh0b2tlbl9pZAAAAAsAAAAA" ]),
       options
@@ -303,7 +303,7 @@ export class Client extends ContractClient {
         token_image: this.txFromJSON<string>,
         is_approved: this.txFromJSON<boolean>,
         transfer: this.txFromJSON<null>,
-        mint: this.txFromJSON<null>,
+        mint: this.txFromJSON<i128>,
         approve: this.txFromJSON<null>,
         transfer_from: this.txFromJSON<null>
   }

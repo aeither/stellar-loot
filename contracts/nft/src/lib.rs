@@ -79,7 +79,7 @@
             }
         }
 
-        pub fn mint(env: Env, to: Address) {
+        pub fn mint(env: Env, to: Address) -> i128 {
             // Retrieve the current token count
            // let token_count: i128 = env.storage().persistent().get(&DataKey::TokenCount).unwrap_or(0);
             //let new_token_id = token_count; // Increment the token count to generate a new token ID
@@ -102,6 +102,9 @@
         
             // Emit an event for the mint operation
             env.events().publish((symbol_short!("Mint"),), (to, new_token_id));
+
+            new_token_id
+            
         }
 
         pub fn approve(env: Env, owner: Address, to: Address, token_id: i128) {
