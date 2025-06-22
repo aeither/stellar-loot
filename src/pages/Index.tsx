@@ -1,15 +1,16 @@
-
 import BottomNav from "@/components/BottomNav";
 import GameHeader from "@/components/GameHeader";
 import QuickActions from "@/components/QuickActions";
 import { Card, CardContent } from "@/components/ui/card";
 import { useStellarWallet } from "@/hooks/useStellarWallet";
+import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import sorobanClient from "../lib/contracts/soroban_nft";
 
 const Index = () => {
   const [xlmBalance] = useState(1250.75);
   const { walletConnected, publicKey, isInitializing, signTransaction, signMessage } = useStellarWallet();
+  const { toast } = useToast();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
@@ -41,91 +42,11 @@ const Index = () => {
                 try {
                   console.log("Button clicked!");
 
-
-                  ///tercera prueba
-
-                  /*
-                  const server = new Horizon.Server("https://horizon-testnet.stellar.org");
-                  const activePubKey = publicKey;
-                  const receiver = await server.loadAccount(activePubKey);
-
-                  const transaction = new TransactionBuilder(receiver, {
-                    fee: BASE_FEE,
-                    networkPassphrase: Networks.TESTNET,
-                  })
-                    .addOperation(
-                      Operation.invokeContractFunction({
-                        function: "mint",
-                        contract: "CBSJ47IYRYLOILMTSOXQVOPP56LLLPU47DY6AOTFUIE7IP4UEMXVOGME",
-                        args: [
-                          nativeToScVal(activePubKey, { type: 'address' })
-                        ],
-                      })
-                    ).setTimeout(30).build();
-
-                  const signedXDR = await signTransaction(transaction.toXDR());
-
-                  const signedTransaction = await TransactionBuilder.fromXDR(
-                    signedXDR.signedTxXdr,
-                    Networks.TESTNET
-                  );
-                  console.log("Signed transaction:", signedTransaction);
-                  
-                  console.log("Signed transaction XDR:", signedTransaction.toXDR());
-
-
-                  //const tx = TransactionBuilder.fromXDR(signedXDR, "Test SDF Network ; September 2015");
-                  const sendResponse = await server.submitTransaction(signedTransaction);
-                  console.log('Send response:', sendResponse);
-                  */
-                  /* tampoco va
-                  //const StellarSdk = require("stellar-sdk");
-                  const server = new Horizon.Server("https://horizon-testnet.stellar.org");
-
-                  const account = await server.loadAccount(publicKey); // Load the account details
-                  console.log("Account loaded:", account);
-                  const transaction = new TransactionBuilder(account, {
-                    fee: BASE_FEE,
-                    networkPassphrase: Networks.TESTNET,
-                  })
-                    .addOperation(
-                      Operation.invokeContractFunction({
-                        function: "mint",
-                        contract: "CBSJ47IYRYLOILMTSOXQVOPP56LLLPU47DY6AOTFUIE7IP4UEMXVOGME",
-                        args: [
-                          nativeToScVal(publicKey, { type: 'address' })
-                        ],
-                      })
-                    )
-                    .setTimeout(0)
-                    .build();
-                  console.log("Transaction built:", transaction.toXDR());
-
-                  // Sign the transaction
-                  const signedTransaction = await signTransaction(transaction.toXDR());
-                  console.log("Transaction signed:", signedTransaction);
-
-                  const jwtToken = "tgwBWa4plZe7IKqhsVBZlg_hP8zw8hsiykJqlaG09og";
-
-                  // Submit the transaction
-                  const signedXDR = signedTransaction.signedTxXdr;
-                  const postResponse = await fetch("https://testnet.launchtube.xyz", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                      "Authorization": `Bearer ${jwtToken}`,
-                    },
-                    body: JSON.stringify({ xdr: signedXDR }),
+                  // Show loading toast
+                  toast({
+                    title: "Opening Chest...",
+                    description: "Minting your NFT, please wait...",
                   });
-
-                  if (postResponse.ok) {
-                    const result = await postResponse.json();
-                    console.log("Transaction submitted successfully:", result);
-                  } else {
-                    console.error("Failed to submit transaction:", postResponse.statusText);
-                  }
-                  
-                  */
 
                   // VIEJO NO SIRVE
                   // Mint the transaction
@@ -161,12 +82,32 @@ const Index = () => {
                   if (postResponse.ok) {
                     const result = await postResponse.json();
                     console.log("Transaction submitted successfully:", result);
+                    
+                    // Show success toast
+                    toast({
+                      title: "🎉 Chest Opened Successfully!",
+                      description: "Your NFT has been minted and is now in your collection!",
+                    });
                   } else {
                     console.error("Failed to submit transaction:", postResponse.statusText);
+                    
+                    // Show error toast
+                    toast({
+                      title: "❌ Transaction Failed",
+                      description: "Failed to submit transaction. Please try again.",
+                      variant: "destructive",
+                    });
                   }
                   //*/
                 } catch (error) {
                   console.error("Error occurred:", error);
+                  
+                  // Show error toast
+                  toast({
+                    title: "❌ Error Opening Chest",
+                    description: "An unexpected error occurred. Please try again.",
+                    variant: "destructive",
+                  });
                 }
 
               }}
