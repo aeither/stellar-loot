@@ -11,6 +11,15 @@ fn test_name() {
 }
 
 #[test]
+fn test_mint() {
+    let env = Env::default();
+    let to = Address::random(&env);
+    SorobanNFT::mint(env.clone(), to.clone());
+    // Add assertions to verify storage and events
+}
+
+
+#[test]
 fn test_symbol() {
     let env = Env::default();
     let contract_id = env.register_contract(None, SorobanNFT);
