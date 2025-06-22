@@ -12,35 +12,6 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
   const [walletConnected, setWalletConnected] = useState(false);
   const [publicKey, setPublicKey] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
-  const [accountExists, setAccountExists] = useState<boolean | null>(null);
-
-  // Improved account existence check function using direct HTTP request
-  const verifyAccountFunding = async (publicKey: string): Promise<boolean> => {
-    try {
-      const horizonUrl = network === WalletNetwork.TESTNET 
-        ? 'https://horizon-testnet.stellar.org' 
-        : 'https://horizon.stellar.org';
-      
-      const response = await fetch(`${horizonUrl}/accounts/${publicKey}`);
-      
-      if (response.ok) {
-        const account = await response.json();
-        console.log('Account loaded successfully:', account.id);
-        console.log('Account balances:', account.balances);
-        return true;
-      } else if (response.status === 404) {
-        console.log('Account not found on network');
-        return false;
-      } else {
-        console.log('Account verification failed with status:', response.status);
-        return false;
-      }
-    } catch (error: any) {
-      console.error('Account verification failed:', error);
-      console.log('Account verification error:', error.message);
-      return false;
-    }
-  };
 
   useEffect(() => {
     const initializeWalletKit = async () => {
@@ -55,17 +26,15 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
         
         setWalletKit(kit);
 
+        // Check if wallet is already connected by trying to get address
         try {
           const address = await kit.getAddress();
           if (address && address.address) {
             setWalletConnected(true);
             setPublicKey(address.address);
-            
-            const exists = await verifyAccountFunding(address.address);
-            setAccountExists(exists);
-            console.log('Account exists check result:', exists);
           }
         } catch (error) {
+          // Wallet not connected, which is expected
           console.log('No wallet connected');
         }
       } catch (error) {
@@ -95,10 +64,6 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
             const address = await walletKit.getAddress();
             setWalletConnected(true);
             setPublicKey(address.address);
-            
-            const exists = await verifyAccountFunding(address.address);
-            setAccountExists(exists);
-            console.log('Account exists check result after connection:', exists);
           } catch (error) {
             console.error('Error after wallet selection:', error);
           }
@@ -121,7 +86,6 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
       await walletKit.disconnect();
       setWalletConnected(false);
       setPublicKey(null);
-      setAccountExists(null);
     } catch (error) {
       console.error('Error disconnecting wallet:', error);
     }
@@ -158,11 +122,9 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
     walletConnected, 
     publicKey,
     isInitializing,
-    accountExists,
     connectWallet, 
     disconnectWallet,
     signTransaction,
-    signMessage,
-    verifyAccountFunding
+    signMessage
   };
 };

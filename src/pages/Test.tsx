@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Client, networks } from 'hello_world';
+import { Client, networks } from 'bindings';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Wallet, RefreshCw } from 'lucide-react';
+import { Loader2, Wallet } from 'lucide-react';
 import { useStellarWallet } from '@/hooks/useStellarWallet';
 import { Address } from '@stellar/stellar-sdk';
 
@@ -18,13 +18,7 @@ function Test() {
   const [currentMessage, setCurrentMessage] = useState<string>('Hello');
   const [messageValidationError, setMessageValidationError] = useState<string | null>(null);
   
-  const { 
-    walletConnected, 
-    publicKey, 
-    signTransaction,
-    accountExists,
-    verifyAccountFunding
-  } = useStellarWallet();
+  const { walletConnected, publicKey, signTransaction } = useStellarWallet();
 
   // Debug: Log what we're importing
   useEffect(() => {
@@ -55,64 +49,6 @@ function Test() {
     validateMessage(value);
   };
 
-  // Improved account funding handler
-  const handleFundAccount = async () => {
-    if (!publicKey) return;
-    
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      const response = await fetch(
-        `https://friendbot.stellar.org?addr=${publicKey}`,
-        { method: 'GET' }
-      );
-      
-      if (response.ok) {
-        // Wait a moment for the funding to propagate
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Verify funding after friendbot
-        const exists = await verifyAccountFunding(publicKey);
-        if (exists) {
-          setError(null);
-          setGreeting('Account funded successfully! Please try the transaction again.');
-        } else {
-          setError('Funding completed but account verification failed. Please try again.');
-        }
-      } else {
-        const errorText = await response.text();
-        setError(`Friendbot request failed: ${errorText}`);
-      }
-    } catch (err) {
-      setError('Failed to fund account');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Manual account verification
-  const handleVerifyAccount = async () => {
-    if (!publicKey) return;
-    
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      const exists = await verifyAccountFunding(publicKey);
-      if (exists) {
-        setError(null);
-        setGreeting('Account verified successfully!');
-      } else {
-        setError('Account verification failed. Account may not be funded.');
-      }
-    } catch (err) {
-      setError('Account verification failed');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const fetchGreeting = async (to: string = 'World') => {
     setIsLoading(true);
     setError(null);
@@ -125,7 +61,7 @@ function Test() {
 
       const contract = new Client({
         ...networks.testnet,
-        rpcUrl: 'https://soroban-testnet.stellar.org'
+        rpcUrl: 'https://soroban-testnet.stellar.org:443'
       });
       
       const { result } = await contract.hello({ to });
@@ -142,12 +78,6 @@ function Test() {
   const updateMessage = async () => {
     if (!walletConnected || !publicKey) {
       setError('Please connect your wallet first');
-      return;
-    }
-
-    // Check if account exists before attempting transaction
-    if (accountExists === false) {
-      setError('Account not funded on testnet. Please fund your account first.');
       return;
     }
 
@@ -168,46 +98,22 @@ function Test() {
 
       const contract = new Client({
         ...networks.testnet,
-        rpcUrl: 'https://soroban-testnet.stellar.org',
+        rpcUrl: 'https://soroban-testnet.stellar.org:443',
         // Provide the signTransaction function from the wallet
         signTransaction: signTransaction
       });
       
-      // Create the transaction
-      const tx = await contract.update_message({ 
+      // Create the transaction and sign/send it
+      await contract.update_message({ 
         caller: publicKey, 
         new_message: newMessage 
-      });
-      
-      // Properly handle transaction signing and submission
-      try {
-        await tx.signAndSend();
+      }).then((tx) => { 
+        tx.signAndSend();
         setCurrentMessage(newMessage);
         setGreeting('Message updated successfully!');
-      } catch (signError: any) {
-        // Improved error handling
-        let errorMsg = signError.message;
-        
-        // Handle specific Stellar errors
-        if (signError.response?.data?.extras?.result_codes) {
-          const codes = signError.response.data.extras.result_codes;
-          errorMsg = `Transaction failed: ${codes.transaction || codes.operations}`;
-        }
-        
-        // Handle user rejection
-        if (signError.code === -4) {
-          errorMsg = 'Transaction rejected by user';
-        }
-        
-        // Handle account not found
-        if (signError.message?.includes('txNoAccount')) {
-          errorMsg = 'Account not found on network. Please fund your account.';
-        }
-        
-        throw new Error(errorMsg);
-      }
+      });
       
-    } catch (err: any) {
+    } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       setError(errorMessage);
       setGreeting('Error occurred');
@@ -263,54 +169,12 @@ function Test() {
                   <code className="text-xs bg-muted px-2 py-1 rounded">
                     {publicKey?.slice(0, 8)}...{publicKey?.slice(-8)}
                   </code>
-                  {accountExists === false && (
-                    <Badge variant="destructive">Not Funded</Badge>
-                  )}
-                  {accountExists === true && (
-                    <Badge variant="default" className="bg-blue-500">Funded</Badge>
-                  )}
-                  {accountExists === null && (
-                    <Badge variant="secondary">Checking...</Badge>
-                  )}
                 </>
               ) : (
                 <Badge variant="destructive">Not Connected</Badge>
               )}
             </div>
           </div>
-
-          {/* Account Actions */}
-          {walletConnected && publicKey && (
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Account Actions</Label>
-              <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={handleVerifyAccount}
-                  disabled={isLoading}
-                >
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Verify Account
-                </Button>
-                {accountExists === false && (
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={handleFundAccount}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    ) : (
-                      <Wallet className="h-4 w-4 mr-2" />
-                    )}
-                    Fund with Friendbot
-                  </Button>
-                )}
-              </div>
-            </div>
-          )}
 
           {/* Contract Info */}
           <div className="space-y-2">
@@ -340,19 +204,9 @@ function Test() {
               )}
             </div>
             {error && (
-              <div className="text-sm text-destructive">
-                <p>Error: {error}</p>
-                {!accountExists && publicKey && (
-                  <Button 
-                    variant="link" 
-                    className="ml-0 p-0 text-destructive underline h-auto"
-                    onClick={handleFundAccount}
-                    disabled={isLoading}
-                  >
-                    Fund Account with Friendbot
-                  </Button>
-                )}
-              </div>
+              <p className="text-sm text-destructive">
+                Error: {error}
+              </p>
             )}
           </div>
 
@@ -397,18 +251,13 @@ function Test() {
                 />
                 <Button 
                   type="submit" 
-                  disabled={isLoading || !newMessage.trim() || !walletConnected || !!messageValidationError || accountExists === false}
+                  disabled={isLoading || !newMessage.trim() || !walletConnected || !!messageValidationError}
                   variant={!walletConnected ? "secondary" : "default"}
                 >
                   {!walletConnected ? (
                     <>
                       <Wallet className="h-4 w-4 mr-2" />
                       Connect Wallet
-                    </>
-                  ) : accountExists === false ? (
-                    <>
-                      <Wallet className="h-4 w-4 mr-2" />
-                      Fund Account
                     </>
                   ) : isLoading ? (
                     <>
@@ -427,12 +276,7 @@ function Test() {
               )}
               {!walletConnected && (
                 <p className="text-sm text-muted-foreground">
-                  Connect your wallet to update the message
-                </p>
-              )}
-              {accountExists === false && walletConnected && (
-                <p className="text-sm text-muted-foreground">
-                  Your account needs to be funded on testnet before you can update the message
+                  Connect your wallet to update the message (costs 1 XLM)
                 </p>
               )}
               <p className="text-xs text-muted-foreground">
@@ -447,9 +291,9 @@ function Test() {
             <Label className="text-sm font-medium">How it works</Label>
             <div className="text-sm text-muted-foreground space-y-1">
               <p>• <strong>Hello Function:</strong> Calls the contract to get a greeting (read-only)</p>
-              <p>• <strong>Update Message:</strong> Changes the stored message (requires funded wallet)</p>
+              <p>• <strong>Update Message:</strong> Changes the stored message (requires wallet, costs 1 XLM)</p>
               <p>• The contract stores a message that gets combined with your input</p>
-              <p>• Connect your wallet and fund it to test the update_message function</p>
+              <p>• Connect your wallet to test the update_message function</p>
             </div>
           </div>
         </CardContent>
