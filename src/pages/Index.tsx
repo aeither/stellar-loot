@@ -4,15 +4,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import GameHeader from "@/components/GameHeader";
 import QuickActions from "@/components/QuickActions";
 import BottomNav from "@/components/BottomNav";
+import sorobanClient from "../lib/contracts/soroban_nft";
+import { useStellarWallet } from "@/hooks/useStellarWallet";
+import { TransactionBuilder, Networks, Operation, Keypair, Horizon, xdr, nativeToScVal, BASE_FEE } from "stellar-sdk";
 
 const Index = () => {
   const [xlmBalance] = useState(1250.75);
+  const { walletConnected, publicKey, isInitializing, signTransaction, signMessage } = useStellarWallet();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
       <div className="relative z-10 pb-24">
         <GameHeader xlmBalance={xlmBalance} notifications={0} />
-        
+
         {/* Main Content */}
         <div className="px-6 space-y-8">
           {/* Welcome Section */}
@@ -28,8 +32,135 @@ const Index = () => {
           {/* Quick Actions */}
           <div>
             <h3 className="text-xl font-bold text-yellow-300 mb-4 text-center">QUICK ACTIONS</h3>
-            <QuickActions onOpenChest={() => {}} />
+            <QuickActions onOpenChest={() => { }} />
           </div>
+
+          <div className="text-center mt-4">
+            <button
+              className="px-4 py-2 bg-yellow-300 text-black font-bold rounded hover:bg-yellow-400"
+              onClick={async () => {
+                try {
+                  console.log("Button clicked!");
+                  
+                  /* tampoco va
+                  //const StellarSdk = require("stellar-sdk");
+                  const server = new Horizon.Server("https://horizon-testnet.stellar.org");
+
+                  const account = await server.loadAccount(publicKey); // Load the account details
+                  console.log("Account loaded:", account);
+                  const transaction = new TransactionBuilder(account, {
+                    fee: BASE_FEE,
+                    networkPassphrase: Networks.TESTNET,
+                  })
+                    .addOperation(
+                      Operation.invokeContractFunction({
+                        function: "mint",
+                        contract: "CBSJ47IYRYLOILMTSOXQVOPP56LLLPU47DY6AOTFUIE7IP4UEMXVOGME",
+                        args: [
+                          nativeToScVal(publicKey, { type: 'address' })
+                        ],
+                      })
+                    )
+                    .setTimeout(0)
+                    .build();
+                  console.log("Transaction built:", transaction.toXDR());
+
+                  // Sign the transaction
+                  const signedTransaction = await signTransaction(transaction.toXDR());
+                  console.log("Transaction signed:", signedTransaction);
+
+                  const jwtToken = "tgwBWa4plZe7IKqhsVBZlg_hP8zw8hsiykJqlaG09og";
+
+                  // Submit the transaction
+                  const signedXDR = signedTransaction.signedTxXdr;
+                  const postResponse = await fetch("https://testnet.launchtube.xyz", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      "Authorization": `Bearer ${jwtToken}`,
+                    },
+                    body: JSON.stringify({ xdr: signedXDR }),
+                  });
+
+                  if (postResponse.ok) {
+                    const result = await postResponse.json();
+                    console.log("Transaction submitted successfully:", result);
+                  } else {
+                    console.error("Failed to submit transaction:", postResponse.statusText);
+                  }
+                  
+                  */
+
+                  //* VIEJO NO SIRVE
+                  // Mint the transaction
+
+                  const image = await sorobanClient.token_image();
+                  console.log("Token image:", image);
+                  
+                  const res = await image.result;
+                  console.log("Image response:", res);
+
+                  /* viejo
+                  const response = await sorobanClient.mint({ to: publicKey });
+
+                  console.log("Minting transaction response:", response);
+
+                  console.log("Mint response:", response.toXDR());
+                  // Sign the transaction
+                  const signedResponse = await signTransaction(response.toXDR());
+                  console.log("Transaction signed:", signedResponse);
+
+                  // JWT token (replace with your actual token)
+                  const jwtToken = "tgwBWa4plZe7IKqhsVBZlg_hP8zw8hsiykJqlaG09og";
+
+                  // Post the signed transaction to the specified URL
+                  const postResponse = await fetch("https://testnet.launchtube.xyz", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      "Authorization": `Bearer ${jwtToken}`, // Add JWT bearer token
+                    },
+                    body: JSON.stringify({ xdr: signedResponse.signedTxXdr }),
+                  });
+
+                  if (postResponse.ok) {
+                    const result = await postResponse.json();
+                    console.log("Transaction submitted successfully:", result);
+                  } else {
+                    console.error("Failed to submit transaction:", postResponse.statusText);
+                  }
+                  //*/
+                } catch (error) {
+                  console.error("Error occurred:", error);
+                }
+
+              }}
+            >
+              Open Chest
+            </button>
+
+            <button
+              className="px-4 py-2 bg-yellow-300 text-black font-bold rounded hover:bg-yellow-400"
+              onClick={async () => {
+                try {
+                  console.log("Read Button clicked!");
+                  
+                  const image = await sorobanClient.token_image();
+                  console.log("Token image:", image);
+                  
+                  const res = await image.result;
+                  console.log("Image response:", res);
+
+                } catch (error) {
+                  console.error("Error occurred:", error);
+                }
+
+              }}
+            >
+              Read call
+            </button>
+          </div>
+
 
           {/* How to Play Instructions */}
           <Card className="bg-white/10 backdrop-blur-sm border border-white/20">
