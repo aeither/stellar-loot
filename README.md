@@ -1,3 +1,7 @@
+<div align="center">
+    <img src="https://github.com/user-attachments/assets/44377802-b6cc-483a-ae12-88578649e528" alt="Logo" width="300">
+</div>
+
 # 🌟 Stellar Loot
 
 > **"Collect Cards, Earn XLM, Build Your Galactic Empire!"** 🚀
