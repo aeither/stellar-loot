@@ -51,7 +51,6 @@ const Index = () => {
                   // VIEJO NO SIRVE
                   // Mint the transaction
                   sorobanClient.options.publicKey = publicKey;
-
                   const response = await sorobanClient.mint({ to: publicKey });
 
                   // Set the public key for signing
