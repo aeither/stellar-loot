@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,10 +5,15 @@ import GameHeader from "@/components/GameHeader";
 import BottomNav from "@/components/BottomNav";
 import ChestOpening from "@/components/ChestOpening";
 import { Package } from "lucide-react";
+import { useStellarWallet } from "@/hooks/useStellarWallet";
+import { useToast } from "@/hooks/use-toast";
+import sorobanClient from "../lib/contracts/soroban_nft";
 
 const Shop = () => {
   const [xlmBalance] = useState(1250.75);
   const [showChestOpening, setShowChestOpening] = useState(false);
+  const { walletConnected, publicKey, isInitializing, signTransaction, signMessage } = useStellarWallet();
+  const { toast } = useToast();
 
   const handleBuyPack = () => {
     setShowChestOpening(true);
@@ -17,6 +21,46 @@ const Shop = () => {
 
   const handleCloseChest = () => {
     setShowChestOpening(false);
+  };
+
+  const handleMint = async (): Promise<boolean> => {
+    try {
+      console.log("Minting NFT...");
+
+      // Mint the transaction
+      sorobanClient.options.publicKey = publicKey;
+      const response = await sorobanClient.mint({ to: publicKey });
+
+      console.log("Minting transaction response:", response);
+      console.log("Mint response:", response.toXDR());
+
+      // JWT token (replace with your actual token)
+      const jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjZDA5N2VkMWE1M2E5NmMyY2ExN2FlMjEyODRkNTUzMDMzNzRiYmEwZWFlN2M1ZTc5ZDc1NmJjYmQ2ZjFiNDJhIiwiZXhwIjoxNzU3ODM0OTc2LCJjcmVkaXRzIjoxMDAwMDAwMDAwLCJpYXQiOjE3NTA1NzczNzZ9.GpWqEyln70Ct34W8SC6hBP1lInypdX1x3mCKhuvbs6I";
+
+      const body = new FormData();
+      body.append("xdr", response.toXDR());
+
+      // Post the signed transaction to the specified URL
+      const postResponse = await fetch("https://testnet.launchtube.xyz", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${jwtToken}`, // Add JWT bearer token
+        },
+        body,
+      });
+
+      if (postResponse.ok) {
+        const result = await postResponse.json();
+        console.log("Transaction submitted successfully:", result);
+        return true;
+      } else {
+        console.error("Failed to submit transaction:", postResponse.statusText);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error occurred:", error);
+      return false;
+    }
   };
 
   return (
@@ -86,7 +130,7 @@ const Shop = () => {
 
       <BottomNav />
       
-      {showChestOpening && <ChestOpening onClose={handleCloseChest} />}
+      {showChestOpening && <ChestOpening onClose={handleCloseChest} onMint={handleMint} />}
     </div>
   );
 };

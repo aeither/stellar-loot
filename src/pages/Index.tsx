@@ -40,85 +40,6 @@ const Index = () => {
               className="px-4 py-2 bg-yellow-300 text-black font-bold rounded hover:bg-yellow-400"
               onClick={async () => {
                 try {
-                  console.log("Button clicked!");
-
-                  // Show loading toast
-                  toast({
-                    title: "Opening Chest...",
-                    description: "Minting your NFT, please wait...",
-                  });
-
-                  // VIEJO NO SIRVE
-                  // Mint the transaction
-                  sorobanClient.options.publicKey = publicKey;
-
-                  const response = await sorobanClient.mint({ to: publicKey });
-
-                  // Set the public key for signing
-
-                  console.log("Minting transaction response:", response);
-                  console.log("Mint response:", response.toXDR());
-                  // Sign the transaction
-                  // const signedResponse = await signTransaction(response.toXDR());
-                  //signedResponse.signerAddress = publicKey; 
-                  //console.log("Transaction signed:", signedResponse);
-
-                  // JWT token (replace with your actual token)
-                  const jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjZDA5N2VkMWE1M2E5NmMyY2ExN2FlMjEyODRkNTUzMDMzNzRiYmEwZWFlN2M1ZTc5ZDc1NmJjYmQ2ZjFiNDJhIiwiZXhwIjoxNzU3ODM0OTc2LCJjcmVkaXRzIjoxMDAwMDAwMDAwLCJpYXQiOjE3NTA1NzczNzZ9.GpWqEyln70Ct34W8SC6hBP1lInypdX1x3mCKhuvbs6I";
-
-                  const body = new FormData();
-                  //body.append("xdr", signedResponse.signedTxXdr);
-                  body.append("xdr", response.toXDR());
-
-                  // Post the signed transaction to the specified URL
-                  const postResponse = await fetch("https://testnet.launchtube.xyz", {
-                    method: "POST",
-                    headers: {
-                      "Authorization": `Bearer ${jwtToken}`, // Add JWT bearer token
-                    },
-                    body,
-                  });
-
-                  if (postResponse.ok) {
-                    const result = await postResponse.json();
-                    console.log("Transaction submitted successfully:", result);
-                    
-                    // Show success toast
-                    toast({
-                      title: "🎉 Chest Opened Successfully!",
-                      description: "Your NFT has been minted and is now in your collection!",
-                    });
-                  } else {
-                    console.error("Failed to submit transaction:", postResponse.statusText);
-                    
-                    // Show error toast
-                    toast({
-                      title: "❌ Transaction Failed",
-                      description: "Failed to submit transaction. Please try again.",
-                      variant: "destructive",
-                    });
-                  }
-                  //*/
-                } catch (error) {
-                  console.error("Error occurred:", error);
-                  
-                  // Show error toast
-                  toast({
-                    title: "❌ Error Opening Chest",
-                    description: "An unexpected error occurred. Please try again.",
-                    variant: "destructive",
-                  });
-                }
-
-              }}
-            >
-              Open Chest
-            </button>
-
-            <button
-              className="px-4 py-2 bg-yellow-300 text-black font-bold rounded hover:bg-yellow-400"
-              onClick={async () => {
-                try {
                   console.log("Read Button clicked!");
 
                   const image = await sorobanClient.tokens_of({ owner: publicKey });
@@ -137,7 +58,6 @@ const Index = () => {
             </button>
           </div>
 
-
           {/* How to Play Instructions */}
           <Card className="bg-white/10 backdrop-blur-sm border border-white/20">
             <CardContent className="p-6">
@@ -148,7 +68,7 @@ const Index = () => {
               <div className="space-y-3 text-white">
                 <div className="flex items-start space-x-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-sm font-bold">1</span>
-                  <p>Buy card packs for 0.1 XLM each</p>
+                  <p>Buy card packs for 10 XLM each</p>
                 </div>
                 <div className="flex items-start space-x-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-sm font-bold">2</span>

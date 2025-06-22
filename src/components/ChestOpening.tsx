@@ -3,16 +3,19 @@ import { X, Sparkles, Star, Gem } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 // Use `sorobanClient` wherever needed in your component
 interface ChestOpeningProps {
   onClose: () => void;
+  onMint: () => Promise<boolean>; // Function that returns true if minting was successful
 }
 
-const ChestOpening = ({ onClose }: ChestOpeningProps) => {
-  const [chestState, setChestState] = useState<'closed' | 'opening' | 'opened' | 'revealing' | 'rewards'>('closed');
+const ChestOpening = ({ onClose, onMint }: ChestOpeningProps) => {
+  const [chestState, setChestState] = useState<'closed' | 'minting' | 'opening' | 'opened' | 'revealing' | 'rewards'>('closed');
   const [currentRewardIndex, setCurrentRewardIndex] = useState(-1);
   const [revealedRewards, setRevealedRewards] = useState<number[]>([]);
+  const { toast } = useToast();
 
   const rewards = [
     { type: 'card', name: 'Lightning Bolt', rarity: 'Epic', color: 'from-purple-500 to-blue-500', icon: Sparkles },
@@ -21,14 +24,53 @@ const ChestOpening = ({ onClose }: ChestOpeningProps) => {
     { type: 'card', name: 'Ice Crystal', rarity: 'Rare', color: 'from-blue-400 to-cyan-500', icon: Sparkles }
   ];
 
-  const handleChestClick = () => {
+  const handleChestClick = async () => {
     if (chestState === 'closed') {
-      setChestState('opening');
-      setTimeout(() => setChestState('opened'), 1000);
-      setTimeout(() => {
-        setChestState('revealing');
-        setCurrentRewardIndex(0);
-      }, 2000);
+      // Start minting process
+      setChestState('minting');
+      
+      try {
+        // Show loading toast
+        toast({
+          title: "Opening Chest...",
+          description: "Minting your NFT, please wait...",
+        });
+
+        // Call the minting function
+        const mintSuccess = await onMint();
+        
+        if (mintSuccess) {
+          // Show success toast
+          toast({
+            title: "🎉 Chest Opened Successfully!",
+            description: "Your NFT has been minted and is now in your collection!",
+          });
+          
+          // Continue with chest opening animation
+          setChestState('opening');
+          setTimeout(() => setChestState('opened'), 1000);
+          setTimeout(() => {
+            setChestState('revealing');
+            setCurrentRewardIndex(0);
+          }, 2000);
+        } else {
+          // Minting failed, go back to closed state
+          setChestState('closed');
+          toast({
+            title: "❌ Transaction Failed",
+            description: "Failed to mint NFT. Please try again.",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        console.error("Error during minting:", error);
+        setChestState('closed');
+        toast({
+          title: "❌ Error Opening Chest",
+          description: "An unexpected error occurred. Please try again.",
+          variant: "destructive",
+        });
+      }
     } else if (chestState === 'opened') {
       setChestState('revealing');
       setCurrentRewardIndex(0);
@@ -93,9 +135,10 @@ const ChestOpening = ({ onClose }: ChestOpeningProps) => {
         {chestState !== 'rewards' && chestState !== 'revealing' && (
           <div className="text-center">
             <div
-              onClick={handleChestClick}
-              className={`relative mx-auto w-48 h-48 cursor-pointer transition-all duration-1000 ${
-                chestState === 'opening' ? 'animate-bounce' : 'hover:scale-105'
+              onClick={chestState === 'minting' ? undefined : handleChestClick}
+              className={`relative mx-auto w-48 h-48 transition-all duration-1000 ${
+                chestState === 'minting' ? 'cursor-not-allowed opacity-75' :
+                chestState === 'opening' ? 'animate-bounce cursor-pointer' : 'hover:scale-105 cursor-pointer'
               }`}
             >
               {/* Chest */}
@@ -136,6 +179,12 @@ const ChestOpening = ({ onClose }: ChestOpeningProps) => {
                 <div>
                   <h2 className="text-2xl font-bold text-white mb-2">Reward Chest</h2>
                   <p className="text-gray-300">Tap to open!</p>
+                </div>
+              )}
+              {chestState === 'minting' && (
+                <div>
+                  <h2 className="text-2xl font-bold text-yellow-300 mb-2 animate-pulse">Minting NFT...</h2>
+                  <p className="text-gray-300">✨ Creating your digital treasure! ✨</p>
                 </div>
               )}
               {chestState === 'opening' && (

@@ -42,6 +42,17 @@ export default defineConfig(({ mode }) => ({
   build: {
     rollupOptions: {
       external: [],
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          stellar: ['@stellar/stellar-sdk'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-toast'],
+        },
+      },
     },
+    target: 'es2020',
+    minify: 'esbuild',
+    sourcemap: false,
+    chunkSizeWarningLimit: 1000,
   },
 }));
