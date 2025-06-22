@@ -7,15 +7,107 @@ import ChestOpening from "@/components/ChestOpening";
 import { Package, RefreshCw } from "lucide-react";
 import { useStellarWallet } from "@/hooks/useStellarWallet";
 import { useToast } from "@/hooks/use-toast";
+import { TransactionBuilder, Networks, Operation, Asset, Transaction } from "@stellar/stellar-sdk";
+import Server from "@stellar/stellar-sdk";
 import sorobanClient from "../lib/contracts/soroban_nft";
 
 const Shop = () => {
   const [showChestOpening, setShowChestOpening] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const { walletConnected, publicKey, isInitializing, signTransaction, signMessage, xlmBalance, isLoadingBalance, refreshBalance } = useStellarWallet();
   const { toast } = useToast();
 
-  const handleBuyPack = () => {
-    setShowChestOpening(true);
+  const handleBuyPack = async () => {
+    if (!walletConnected || !publicKey) {
+      toast({
+        title: "❌ Wallet Not Connected",
+        description: "Please connect your wallet first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if user has enough balance
+    const currentBalance = parseFloat(xlmBalance);
+    if (currentBalance < 10) {
+      toast({
+        title: "❌ Insufficient Balance",
+        description: "You need at least 10 XLM to buy a card pack.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsProcessingPayment(true);
+
+    try {
+      console.log("Processing payment for card pack...");
+
+      // Create payment transaction
+      const server = new Server("https://horizon-testnet.stellar.org");
+      const account = await server.loadAccount(publicKey);
+      const paymentAmount = 10; // 10 XLM for the card pack
+
+      const transaction = new TransactionBuilder(account, {
+        fee: "10000000",
+        networkPassphrase: Networks.TESTNET,
+      })
+        .addOperation(
+          Operation.payment({
+            destination: "GB7JBARO6QML6YLPTBKHA3JBG7WOEFTDN4EW2L42CSQJJIOXIFMGHTID", // funds receiving wallet address
+            asset: Asset.native(),
+            amount: paymentAmount.toString()
+          })
+        )
+        .setTimeout(300)
+        .build().toXDR();
+
+      // Show loading toast
+      toast({
+        title: "Processing Payment...",
+        description: "Please approve the transaction in your wallet.",
+      });
+
+      // Sign the transaction
+      const signedXDR = await signTransaction(transaction);
+      
+      // Submit the transaction
+      const sendResponse = await server.submitTransaction(new Transaction(signedXDR.signedTxXdr, Networks.TESTNET));
+
+      if (sendResponse.successful) {
+        console.log("Payment successful:", sendResponse);
+        
+        // Show success toast
+        toast({
+          title: "✅ Payment Successful!",
+          description: "You can now open your chest to get your rewards!",
+        });
+
+        // Refresh balance
+        setTimeout(() => {
+          refreshBalance();
+        }, 2000);
+
+        // Show the chest opening component
+        setShowChestOpening(true);
+      } else {
+        console.error("Payment failed:", sendResponse);
+        toast({
+          title: "❌ Payment Failed",
+          description: "Transaction was not successful. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error processing payment:", error);
+      toast({
+        title: "❌ Payment Error",
+        description: "An error occurred while processing your payment. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessingPayment(false);
+    }
   };
 
   const handleCloseChest = () => {
@@ -101,10 +193,24 @@ const Shop = () => {
                 {/* Buy Button */}
                 <Button 
                   onClick={handleBuyPack}
-                  className="w-full bg-white/20 border-2 border-white/40 text-white hover:bg-white/30 hover:border-white/60 transition-all duration-200 text-lg font-bold py-4 rounded-full backdrop-blur-sm"
+                  // disabled={isProcessingPayment || !walletConnected || parseFloat(xlmBalance) < 10}
+                  className="w-full bg-white/20 border-2 border-white/40 text-white hover:bg-white/30 hover:border-white/60 transition-all duration-200 text-lg font-bold py-4 rounded-full backdrop-blur-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  BUY NOW
+                  {isProcessingPayment ? "Processing..." : "BUY NOW"}
                 </Button>
+                
+                {/* Balance warning */}
+                {walletConnected && parseFloat(xlmBalance) < 10 && (
+                  <p className="text-red-400 text-sm mt-2">
+                    Insufficient balance. You need at least 10 XLM.
+                  </p>
+                )}
+                
+                {!walletConnected && (
+                  <p className="text-yellow-400 text-sm mt-2">
+                    Please connect your wallet to buy packs.
+                  </p>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -114,6 +220,7 @@ const Shop = () => {
             <CardContent className="p-6">
               <h3 className="text-xl font-bold text-white mb-4">How it works</h3>
               <div className="space-y-2 text-white">
+                <p>• Pay 10 XLM to purchase a card pack</p>
                 <p>• Each pack contains 3 random cards</p>
                 <p>• Cards can be duplicates</p>
                 <p>• Collect card sets to earn XLM rewards</p>
