@@ -3,32 +3,88 @@ import { X, Sparkles, Star, Gem } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 // Use `sorobanClient` wherever needed in your component
 interface ChestOpeningProps {
   onClose: () => void;
+  onMint: () => Promise<boolean>; // Function that returns true if minting was successful
 }
 
-const ChestOpening = ({ onClose }: ChestOpeningProps) => {
-  const [chestState, setChestState] = useState<'closed' | 'opening' | 'opened' | 'revealing' | 'rewards'>('closed');
+const ChestOpening = ({ onClose, onMint }: ChestOpeningProps) => {
+  const [chestState, setChestState] = useState<'closed' | 'minting' | 'opening' | 'opened' | 'revealing' | 'rewards'>('closed');
   const [currentRewardIndex, setCurrentRewardIndex] = useState(-1);
   const [revealedRewards, setRevealedRewards] = useState<number[]>([]);
+  const { toast } = useToast();
+
+  // Function to get random image from the 3 available
+  const getRandomImage = () => {
+    const images = ['/images/tomato.jpeg', '/images/eggplant.jpeg', '/images/cucumber.jpeg'];
+    const randomIndex = Math.floor(Math.random() * images.length);
+    return images[randomIndex];
+  };
+
+  // Function to get name based on image
+  const getNameFromImage = (imagePath: string) => {
+    if (imagePath.includes('tomato')) return 'Tomato';
+    if (imagePath.includes('eggplant')) return 'Eggplant';
+    if (imagePath.includes('cucumber')) return 'Cucumber';
+    return 'Unknown';
+  };
 
   const rewards = [
-    { type: 'card', name: 'Lightning Bolt', rarity: 'Epic', color: 'from-purple-500 to-blue-500', icon: Sparkles },
-    { type: 'card', name: 'Fire Dragon', rarity: 'Legendary', color: 'from-red-500 to-orange-500', icon: Star },
-    { type: 'xlm', amount: 150, icon: Gem },
-    { type: 'card', name: 'Ice Crystal', rarity: 'Rare', color: 'from-blue-400 to-cyan-500', icon: Sparkles }
+    { type: 'card', name: getNameFromImage(getRandomImage()), rarity: 'Epic', color: 'from-purple-500 to-blue-500', image: getRandomImage() },
+    { type: 'card', name: getNameFromImage(getRandomImage()), rarity: 'Legendary', color: 'from-red-500 to-orange-500', image: getRandomImage() },
+    { type: 'xlm', amount: 0, icon: Gem }
   ];
 
-  const handleChestClick = () => {
+  const handleChestClick = async () => {
     if (chestState === 'closed') {
-      setChestState('opening');
-      setTimeout(() => setChestState('opened'), 1000);
-      setTimeout(() => {
-        setChestState('revealing');
-        setCurrentRewardIndex(0);
-      }, 2000);
+      // Start minting process
+      setChestState('minting');
+      
+      try {
+        // Show loading toast
+        toast({
+          title: "Opening Chest...",
+          description: "Minting your NFT, please wait...",
+        });
+
+        // Call the minting function
+        const mintSuccess = await onMint();
+        
+        if (mintSuccess) {
+          // Show success toast
+          toast({
+            title: "🎉 Chest Opened Successfully!",
+            description: "Your NFT has been minted and is now in your collection!",
+          });
+          
+          // Continue with chest opening animation
+          setChestState('opening');
+          setTimeout(() => setChestState('opened'), 1000);
+          setTimeout(() => {
+            setChestState('revealing');
+            setCurrentRewardIndex(0);
+          }, 2000);
+        } else {
+          // Minting failed, go back to closed state
+          setChestState('closed');
+          toast({
+            title: "❌ Transaction Failed",
+            description: "Failed to mint NFT. Please try again.",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        console.error("Error during minting:", error);
+        setChestState('closed');
+        toast({
+          title: "❌ Error Opening Chest",
+          description: "An unexpected error occurred. Please try again.",
+          variant: "destructive",
+        });
+      }
     } else if (chestState === 'opened') {
       setChestState('revealing');
       setCurrentRewardIndex(0);
@@ -93,9 +149,10 @@ const ChestOpening = ({ onClose }: ChestOpeningProps) => {
         {chestState !== 'rewards' && chestState !== 'revealing' && (
           <div className="text-center">
             <div
-              onClick={handleChestClick}
-              className={`relative mx-auto w-48 h-48 cursor-pointer transition-all duration-1000 ${
-                chestState === 'opening' ? 'animate-bounce' : 'hover:scale-105'
+              onClick={chestState === 'minting' ? undefined : handleChestClick}
+              className={`relative mx-auto w-48 h-48 transition-all duration-1000 ${
+                chestState === 'minting' ? 'cursor-not-allowed opacity-75' :
+                chestState === 'opening' ? 'animate-bounce cursor-pointer' : 'hover:scale-105 cursor-pointer'
               }`}
             >
               {/* Chest */}
@@ -138,6 +195,12 @@ const ChestOpening = ({ onClose }: ChestOpeningProps) => {
                   <p className="text-gray-300">Tap to open!</p>
                 </div>
               )}
+              {chestState === 'minting' && (
+                <div>
+                  <h2 className="text-2xl font-bold text-yellow-300 mb-2 animate-pulse">Minting NFT...</h2>
+                  <p className="text-gray-300">✨ Creating your digital treasure! ✨</p>
+                </div>
+              )}
               {chestState === 'opening' && (
                 <div>
                   <h2 className="text-2xl font-bold text-yellow-300 mb-2 animate-pulse">Opening...</h2>
@@ -175,10 +238,7 @@ const ChestOpening = ({ onClose }: ChestOpeningProps) => {
                   {rewards[currentRewardIndex].type === 'card' ? (
                     <>
                       <div className={`w-24 h-24 bg-gradient-to-br ${rewards[currentRewardIndex].color} rounded-2xl flex items-center justify-center mb-4 shadow-2xl border-4 border-white/30 animate-pulse`}>
-                        {(() => {
-                          const IconComponent = rewards[currentRewardIndex].icon;
-                          return <IconComponent className="w-12 h-12 text-white drop-shadow-lg" />;
-                        })()}
+                        <img src={rewards[currentRewardIndex].image} alt={rewards[currentRewardIndex].name} className="w-24 h-24 rounded-2xl" />
                       </div>
                       <h3 className="text-2xl font-bold text-white mb-2">{rewards[currentRewardIndex].name}</h3>
                       <Badge className={`text-lg px-4 py-2 ${
@@ -243,10 +303,7 @@ const ChestOpening = ({ onClose }: ChestOpeningProps) => {
                       {reward.type === 'card' ? (
                         <>
                           <div className={`w-12 h-12 bg-gradient-to-br ${reward.color} rounded-lg flex items-center justify-center shadow-xl border-2 border-white/30`}>
-                            {(() => {
-                              const IconComponent = reward.icon;
-                              return <IconComponent className="w-6 h-6 text-white" />;
-                            })()}
+                            <img src={reward.image} alt={reward.name} className="w-12 h-12 rounded-lg object-cover" />
                           </div>
                           <div className="flex-1">
                             <p className="font-bold text-white">{reward.name}</p>

@@ -1,99 +1,227 @@
-# Welcome to your Lovable project
+<div align="center">
+    <img src="https://github.com/user-attachments/assets/44377802-b6cc-483a-ae12-88578649e528" alt="Logo" width="300">
+</div>
 
-## Project info
+# 🌟 Stellar Loot
 
-**URL**: https://lovable.dev/projects/c4d72b88-4d38-4ac0-aad1-db9e0e271e1d
+> **"Collect Cards, Earn XLM, Build Your Galactic Empire!"** 🚀
 
-## Stellar Wallet Integration
+[![Stellar](https://img.shields.io/badge/Stellar-Network-yellow?style=for-the-badge&logo=stellar)](https://stellar.org)
+[![Soroban](https://img.shields.io/badge/Soroban-Smart%20Contracts-purple?style=for-the-badge)](https://soroban.stellar.org)
+[![React](https://img.shields.io/badge/React-18.3.1-blue?style=for-the-badge&logo=react)](https://reactjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5.3-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
+[![Vite](https://img.shields.io/badge/Vite-5.4.1-purple?style=for-the-badge&logo=vite)](https://vitejs.dev)
 
-This project includes comprehensive Stellar wallet functionality with support for:
+## 🎮 What is Stellar Loot?
 
-### Features
-- **Browser Wallet Connection**: Connect Freighter and xBull wallets
-- **Manual Wallet Creation**: Generate new Stellar keypairs for testing
-- **Testnet Funding**: Automatically fund wallets on Stellar testnet
-- **Balance Checking**: View wallet balances in real-time
-- **Transaction Signing**: Sign transactions and messages with connected wallets
+**Stellar Loot** is a mobile-first, blockchain-powered card collection game built on the **Stellar Network** using **Soroban smart contracts**. Players collect unique NFT cards, complete sets, and earn real **XLM rewards** in a fun, gamified experience.
 
-### How to Use
-1. Navigate to the **Wallet** tab in the bottom navigation
-2. **Connect Browser Wallet**: Click "Connect Wallet" to connect Freighter or xBull
-3. **Create Manual Wallet**: Click "Create New Wallet" to generate a test wallet
-4. **Fund Testnet**: Use "Fund on Testnet" to get test XLM for development
+### 🎯 The Problem We Solve
 
-### Dependencies
-- `@stellar/stellar-sdk`: Core Stellar functionality
-- `@creit.tech/stellar-wallets-kit`: Browser wallet integration
+- **High Barrier to Entry**: Traditional blockchain games are complex and intimidating for new users
+- **Lack of Mobile-First Design**: Most DeFi apps aren't optimized for mobile users
+- **No Real Rewards**: Many games offer worthless tokens instead of real value
+- **Poor User Experience**: Complex wallet connections and transaction processes
 
-### Security Notes
-- Manual wallet secret keys are for testing only
-- Never share secret keys in production
-- Use browser wallets for production applications
+### 💡 Our Solution
 
-## How can I edit this code?
+**Stellar Loot** transforms the complex world of blockchain gaming into an accessible, fun, and rewarding experience:
 
-There are several ways of editing your application.
+- 🎮 **Mobile-First Design**: Optimized for touch interactions and mobile screens
+- 🎯 **Simple Gameplay**: Easy-to-understand card collection mechanics
+- 💰 **Real Rewards**: Earn actual XLM for completing card sets
+- 🔗 **Seamless Integration**: One-click wallet connection with Freighter/xBull
+- ⚡ **Fast Transactions**: Leveraging Stellar's 3-5 second confirmation times
+- 🎨 **Beautiful UI**: Modern, gradient-rich design with smooth animations
 
-**Use Lovable**
+## 🚀 Key Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/c4d72b88-4d38-4ac0-aad1-db9e0e271e1d) and start prompting.
+### 🎴 **Card Collection System**
+- Collect unique NFT cards with stunning artwork
+- Complete sets to unlock XLM rewards
+- Track your collection with real-time updates
+- Duplicate cards add value to your collection
 
-Changes made via Lovable will be committed automatically to this repo.
+### 💎 **NFT Minting**
+- One-click NFT minting through "Chest Opening"
+- Real-time transaction feedback with toast notifications
+- Secure wallet integration with Stellar wallets
+- IPFS-hosted card metadata and images
 
-**Use your preferred IDE**
+### 🏆 **Rewards System**
+- Earn XLM for completing card sets
+- Transparent reward distribution
+- Real-time balance updates
+- Secure transaction processing
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 📱 **Mobile-First Experience**
+- Responsive design optimized for mobile devices
+- Touch-friendly interface
+- Smooth animations and transitions
+- Offline-capable with service workers
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🛠️ Tech Stack
 
-Follow these steps:
+### **Frontend**
+- **React 18** with TypeScript for type safety
+- **Vite** for lightning-fast development and builds
+- **Tailwind CSS** for responsive, utility-first styling
+- **Radix UI** for accessible, unstyled components
+- **Framer Motion** for smooth animations
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### **Blockchain & Smart Contracts**
+- **Stellar Network** for fast, low-cost transactions
+- **Soroban Smart Contracts** written in Rust
+- **Soroban SDK** for contract interactions
+- **LaunchTube** for transaction submission and monitoring
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### **Wallet Integration**
+- **Stellar Wallets Kit** for multi-wallet support
+- **Freighter** and **xBull** wallet compatibility
+- **Secure key management** with environment variables
 
-# Step 3: Install the necessary dependencies.
-npm i
+### **Infrastructure**
+- **Vercel** for deployment and hosting
+- **IPFS** for decentralized file storage
+- **GitHub** for version control and collaboration
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+## 🎯 Smart Contract Features
+
+Our **Soroban NFT Contract** (`soroban_nft.rs`) includes:
+
+```rust
+// Core NFT functionality
+- mint(to: Address)           // Mint new NFTs
+- owner_of(token_id: i128)    // Get token owner
+- tokens_of(owner: Address)   // Get user's tokens
+- transfer(from, to, token_id) // Transfer tokens
+- approve(operator, token_id)  // Approve transfers
+
+// Game-specific features
+- Limited supply (1000 tokens)
+- Metadata storage (name, symbol, URI, image)
+- Event emission for frontend updates
+- Authorization framework
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+ 
+- Stellar wallet (Freighter or xBull)
+- Testnet XLM for transactions
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/stellar-loot.git
+cd stellar-loot
+
+# Install dependencies
+npm install
+
+# Set up environment
+npx tsx scripts/read-alice.ts
+
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Smart Contract Deployment
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+# Navigate to contract directory
+cd contracts/nft
 
-**Use GitHub Codespaces**
+# Build the contract
+cargo build --target wasm32-unknown-unknown --release
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Deploy to testnet
+stellar contract deploy \
+  --wasm target/wasm32-unknown-unknown/release/soroban_nft.wasm \
+  --source alice \
+  --network testnet
 
-## What technologies are used for this project?
+# Generate TypeScript bindings
+stellar contract bindings typescript \
+  --contract-id YOUR_CONTRACT_ID \
+  --network testnet \
+  --output-dir bindings
+```
 
-This project is built with:
+## 🎮 How to Play
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+1. **Connect Wallet**: Link your Stellar wallet (Freighter/xBull)
+2. **Open Chests**: Click "Open Chest" to mint new NFT cards
+3. **Collect Cards**: Build your collection with unique cards
+4. **Complete Sets**: Gather all cards in a set to earn XLM rewards
+5. **Trade & Share**: Transfer cards to friends or trade them
 
-## How can I deploy this project?
+## 🌟 Why Stellar?
 
-Simply open [Lovable](https://lovable.dev/projects/c4d72b88-4d38-4ac0-aad1-db9e0e271e1d) and click on Share -> Publish.
+- **⚡ Lightning Fast**: 3-5 second transaction confirmations
+- **💰 Low Fees**: Transactions cost fractions of a cent
+- **🌍 Eco-Friendly**: Carbon-neutral blockchain
+- **🔒 Secure**: Battle-tested network with 7+ years of uptime
+- **🌐 Interoperable**: Built-in DEX and asset issuance
+- **📱 Mobile Ready**: Perfect for mobile-first applications
 
-## Can I connect a custom domain to my Lovable project?
+## 🏆 Hackathon Highlights
 
-Yes, you can!
+### **Innovation**
+- First mobile-first card collection game on Stellar
+- Seamless integration of Soroban smart contracts
+- Real-time transaction feedback with toast notifications
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### **Technical Excellence**
+- Rust smart contracts with comprehensive testing
+- TypeScript frontend with full type safety
+- Modern React patterns with hooks and context
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### **User Experience**
+- Intuitive mobile-first design
+- One-click wallet connection
+- Real-time balance and transaction updates
+
+### **Real-World Impact**
+- Demonstrates practical use of Soroban smart contracts
+- Shows potential for gaming on Stellar network
+- Provides template for future DeFi applications
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Development Scripts
+
+```bash
+# Generate secret key from mnemonic
+npx tsx scripts/phrase2secret.ts
+
+# Read Alice's identity and create .env
+npx tsx scripts/read-alice.ts
+
+# Mint NFT (requires .env setup)
+npx tsx scripts/nft2.ts
+
+# Build for production
+npm run build
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **Stellar Development Foundation** for the amazing blockchain platform
+- **Soroban Team** for the smart contract framework
+- **LaunchTube** for transaction infrastructure
+- **Vercel** for hosting and deployment
+
+---
+
+**Built with ❤️ for the Stellar Community**
+
+*Ready to start your galactic card collection? Connect your wallet and begin your journey!* 🚀✨

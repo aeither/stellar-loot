@@ -7,8 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
+    "build:clean": "rm -rf node_modules package-lock.json && npm install && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "echo 'Post-install completed'"
   },
   "dependencies": {
     "@creit.tech/stellar-wallets-kit": "^1.7.5",
@@ -42,10 +44,12 @@
     "@radix-ui/react-tooltip": "^1.1.4",
     "@stellar/stellar-sdk": "^13.3.0",
     "@tanstack/react-query": "^5.56.2",
+    "bip39": "^3.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
+    "ed25519-hd-key": "^1.3.0",
     "embla-carousel-react": "^8.3.0",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.462.0",
@@ -61,12 +65,14 @@
     "soroban_nft": "file:contracts/nft/packages/soroban_nft",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "toml": "^3.0.0",
     "vaul": "^0.9.3",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@tailwindcss/typography": "^0.5.15",
+    "@types/bip39": "^2.4.2",
     "@types/node": "^22.5.5",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import GameHeader from "@/components/GameHeader";
@@ -10,38 +9,38 @@ const Cards = () => {
   const cards = [
     { 
       id: 1, 
-      name: "Blue Whale", 
-      image: "/lovable-uploads/359c75f6-7932-42bf-a1de-9a7f8af3345d.png",
+      name: "Tomato", 
+      image: "/images/tomato.jpeg",
       quantity: 1
     },
     { 
       id: 2, 
-      name: "Coral Reef", 
-      image: "/lovable-uploads/359c75f6-7932-42bf-a1de-9a7f8af3345d.png",
+      name: "Eggplant", 
+      image: "/images/eggplant.jpeg",
       quantity: 2
     },
     { 
       id: 3, 
-      name: "Saturn", 
-      image: "/lovable-uploads/359c75f6-7932-42bf-a1de-9a7f8af3345d.png",
+      name: "Cucumber", 
+      image: "/images/cucumber.jpeg",
       quantity: 1
     },
     { 
       id: 4, 
-      name: "Galaxy", 
-      image: "/lovable-uploads/359c75f6-7932-42bf-a1de-9a7f8af3345d.png",
+      name: "Tomato", 
+      image: "/images/tomato.jpeg",
       quantity: 1
     },
     { 
       id: 5, 
-      name: "Forest", 
-      image: "/lovable-uploads/359c75f6-7932-42bf-a1de-9a7f8af3345d.png",
+      name: "Eggplant", 
+      image: "/images/eggplant.jpeg",
       quantity: 1
     },
     { 
       id: 6, 
-      name: "Mountain", 
-      image: "/lovable-uploads/359c75f6-7932-42bf-a1de-9a7f8af3345d.png",
+      name: "Cucumber", 
+      image: "/images/cucumber.jpeg",
       quantity: 1
     }
   ];

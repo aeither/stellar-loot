@@ -30,7 +30,9 @@ However, we've actually encountered [frustration](https://github.com/stellar/sor
 
 ```json
 "scripts": {
+
   "postinstall": "soroban contract bindings ts --rpc-url https://soroban-testnet.stellar.org --network-passphrase \"Test SDF Network ; September 2015\" --id CDH2OICCUXRWEY52YRRQDJBUJCKSVEN4JFUKWTLWWXXO5QLZ6Q6ZIGDQ --name soroban_nft"
+
 }
 ```
 
