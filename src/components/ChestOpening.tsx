@@ -17,11 +17,25 @@ const ChestOpening = ({ onClose, onMint }: ChestOpeningProps) => {
   const [revealedRewards, setRevealedRewards] = useState<number[]>([]);
   const { toast } = useToast();
 
+  // Function to get random image from the 3 available
+  const getRandomImage = () => {
+    const images = ['/images/tomato.jpeg', '/images/eggplant.jpeg', '/images/cucumber.jpeg'];
+    const randomIndex = Math.floor(Math.random() * images.length);
+    return images[randomIndex];
+  };
+
+  // Function to get name based on image
+  const getNameFromImage = (imagePath: string) => {
+    if (imagePath.includes('tomato')) return 'Tomato';
+    if (imagePath.includes('eggplant')) return 'Eggplant';
+    if (imagePath.includes('cucumber')) return 'Cucumber';
+    return 'Unknown';
+  };
+
   const rewards = [
-    { type: 'card', name: 'Lightning Bolt', rarity: 'Epic', color: 'from-purple-500 to-blue-500', icon: Sparkles },
-    { type: 'card', name: 'Fire Dragon', rarity: 'Legendary', color: 'from-red-500 to-orange-500', icon: Star },
-    { type: 'xlm', amount: 150, icon: Gem },
-    { type: 'card', name: 'Ice Crystal', rarity: 'Rare', color: 'from-blue-400 to-cyan-500', icon: Sparkles }
+    { type: 'card', name: getNameFromImage(getRandomImage()), rarity: 'Epic', color: 'from-purple-500 to-blue-500', image: getRandomImage() },
+    { type: 'card', name: getNameFromImage(getRandomImage()), rarity: 'Legendary', color: 'from-red-500 to-orange-500', image: getRandomImage() },
+    { type: 'xlm', amount: 0, icon: Gem }
   ];
 
   const handleChestClick = async () => {
@@ -224,10 +238,7 @@ const ChestOpening = ({ onClose, onMint }: ChestOpeningProps) => {
                   {rewards[currentRewardIndex].type === 'card' ? (
                     <>
                       <div className={`w-24 h-24 bg-gradient-to-br ${rewards[currentRewardIndex].color} rounded-2xl flex items-center justify-center mb-4 shadow-2xl border-4 border-white/30 animate-pulse`}>
-                        {(() => {
-                          const IconComponent = rewards[currentRewardIndex].icon;
-                          return <IconComponent className="w-12 h-12 text-white drop-shadow-lg" />;
-                        })()}
+                        <img src={rewards[currentRewardIndex].image} alt={rewards[currentRewardIndex].name} className="w-24 h-24 rounded-2xl" />
                       </div>
                       <h3 className="text-2xl font-bold text-white mb-2">{rewards[currentRewardIndex].name}</h3>
                       <Badge className={`text-lg px-4 py-2 ${
@@ -292,10 +303,7 @@ const ChestOpening = ({ onClose, onMint }: ChestOpeningProps) => {
                       {reward.type === 'card' ? (
                         <>
                           <div className={`w-12 h-12 bg-gradient-to-br ${reward.color} rounded-lg flex items-center justify-center shadow-xl border-2 border-white/30`}>
-                            {(() => {
-                              const IconComponent = reward.icon;
-                              return <IconComponent className="w-6 h-6 text-white" />;
-                            })()}
+                            <img src={reward.image} alt={reward.name} className="w-12 h-12 rounded-lg object-cover" />
                           </div>
                           <div className="flex-1">
                             <p className="font-bold text-white">{reward.name}</p>
