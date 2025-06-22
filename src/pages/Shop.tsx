@@ -4,15 +4,14 @@ import { Button } from "@/components/ui/button";
 import GameHeader from "@/components/GameHeader";
 import BottomNav from "@/components/BottomNav";
 import ChestOpening from "@/components/ChestOpening";
-import { Package } from "lucide-react";
+import { Package, RefreshCw } from "lucide-react";
 import { useStellarWallet } from "@/hooks/useStellarWallet";
 import { useToast } from "@/hooks/use-toast";
 import sorobanClient from "../lib/contracts/soroban_nft";
 
 const Shop = () => {
-  const [xlmBalance] = useState(1250.75);
   const [showChestOpening, setShowChestOpening] = useState(false);
-  const { walletConnected, publicKey, isInitializing, signTransaction, signMessage } = useStellarWallet();
+  const { walletConnected, publicKey, isInitializing, signTransaction, signMessage, xlmBalance, isLoadingBalance, refreshBalance } = useStellarWallet();
   const { toast } = useToast();
 
   const handleBuyPack = () => {
@@ -52,6 +51,12 @@ const Shop = () => {
       if (postResponse.ok) {
         const result = await postResponse.json();
         console.log("Transaction submitted successfully:", result);
+        
+        // Refresh the balance after successful mint
+        setTimeout(() => {
+          refreshBalance();
+        }, 2000); // Wait 2 seconds for transaction to be processed
+        
         return true;
       } else {
         console.error("Failed to submit transaction:", postResponse.statusText);
@@ -66,7 +71,7 @@ const Shop = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
       <div className="relative z-10 pb-24">
-        <GameHeader xlmBalance={xlmBalance} notifications={0} />
+        <GameHeader xlmBalance={parseFloat(xlmBalance) || 0} notifications={0} />
         
         <div className="px-6 py-6">
           {/* Header */}
@@ -119,10 +124,23 @@ const Shop = () => {
 
           {/* Balance Info */}
           <Card className="mt-6 bg-white/10 backdrop-blur-sm border border-white/20">
-            <CardContent className="p-4 text-center">
-              <p className="text-gray-300">
-                Your balance: <span className="text-yellow-300 font-bold">{xlmBalance} XLM</span>
-              </p>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-gray-300">
+                  Your balance: <span className="text-yellow-300 font-bold">
+                    {isLoadingBalance ? "Loading..." : `${parseFloat(xlmBalance).toFixed(2)} XLM`}
+                  </span>
+                </p>
+                <Button
+                  onClick={refreshBalance}
+                  disabled={isLoadingBalance}
+                  variant="ghost"
+                  size="sm"
+                  className="text-yellow-300 hover:text-white hover:bg-white/10 p-2 rounded-full"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isLoadingBalance ? 'animate-spin' : ''}`} />
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>

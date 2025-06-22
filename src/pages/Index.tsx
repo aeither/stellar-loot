@@ -8,14 +8,13 @@ import { useState } from "react";
 import sorobanClient from "../lib/contracts/soroban_nft";
 
 const Index = () => {
-  const [xlmBalance] = useState(1250.75);
-  const { walletConnected, publicKey, isInitializing, signTransaction, signMessage } = useStellarWallet();
+  const { walletConnected, publicKey, isInitializing, signTransaction, signMessage, xlmBalance, isLoadingBalance } = useStellarWallet();
   const { toast } = useToast();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
       <div className="relative z-10 pb-24">
-        <GameHeader xlmBalance={xlmBalance} notifications={0} />
+        <GameHeader xlmBalance={parseFloat(xlmBalance) || 0} notifications={0} />
 
         {/* Main Content */}
         <div className="px-6 space-y-8">

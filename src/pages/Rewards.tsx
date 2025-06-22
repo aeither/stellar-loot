@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import GameHeader from "@/components/GameHeader";
 import BottomNav from "@/components/BottomNav";
 import { Trophy } from "lucide-react";
+import { useStellarWallet } from "@/hooks/useStellarWallet";
 
 const Rewards = () => {
-  const [xlmBalance] = useState(1250.75);
+  const { xlmBalance, isLoadingBalance } = useStellarWallet();
   
   const cardSets = [
     {
@@ -52,7 +53,7 @@ const Rewards = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
       <div className="relative z-10 pb-24">
-        <GameHeader xlmBalance={xlmBalance} notifications={0} />
+        <GameHeader xlmBalance={parseFloat(xlmBalance) || 0} notifications={0} />
         
         <div className="px-6 py-6 space-y-6">
           {/* Header */}

@@ -6,12 +6,55 @@ import {
   StellarWalletsKit,
   WalletNetwork,
 } from "@creit.tech/stellar-wallets-kit";
+import Server from "@stellar/stellar-sdk";
 
 export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET) => {
   const [walletKit, setWalletKit] = useState<StellarWalletsKit | null>(null);
   const [walletConnected, setWalletConnected] = useState(false);
   const [publicKey, setPublicKey] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [xlmBalance, setXlmBalance] = useState<string>("0");
+  const [isLoadingBalance, setIsLoadingBalance] = useState(false);
+
+  // Initialize Stellar server based on network
+  const getServer = () => {
+    return network === WalletNetwork.TESTNET 
+      ? new Server('https://horizon-testnet.stellar.org')
+      : new Server('https://horizon.stellar.org');
+  };
+
+  // Function to fetch XLM balance
+  const fetchXlmBalance = async (address: string) => {
+    try {
+      setIsLoadingBalance(true);
+      const server = getServer();
+      const account = await server.loadAccount(address);
+      
+      // Find the XLM (native asset) balance
+      const xlmBalance = account.balances.find(
+        (bal) => bal.asset_type === 'native'
+      );
+      
+      const balance = xlmBalance ? xlmBalance.balance : '0';
+      setXlmBalance(balance);
+      return balance;
+    } catch (error) {
+      console.error('Error loading account balance:', error);
+      setXlmBalance("0");
+      return "0";
+    } finally {
+      setIsLoadingBalance(false);
+    }
+  };
+
+  // Fetch balance when public key changes
+  useEffect(() => {
+    if (publicKey && walletConnected) {
+      fetchXlmBalance(publicKey);
+    } else {
+      setXlmBalance("0");
+    }
+  }, [publicKey, walletConnected, network]);
 
   useEffect(() => {
     const initializeWalletKit = async () => {
@@ -86,6 +129,7 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
       await walletKit.disconnect();
       setWalletConnected(false);
       setPublicKey(null);
+      setXlmBalance("0");
     } catch (error) {
       console.error('Error disconnecting wallet:', error);
     }
@@ -117,14 +161,24 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
     }
   };
 
+  const refreshBalance = async () => {
+    if (publicKey && walletConnected) {
+      return await fetchXlmBalance(publicKey);
+    }
+    return "0";
+  };
+
   return { 
     walletKit, 
     walletConnected, 
     publicKey,
     isInitializing,
+    xlmBalance,
+    isLoadingBalance,
     connectWallet, 
     disconnectWallet,
     signTransaction,
-    signMessage
+    signMessage,
+    refreshBalance
   };
 };
