@@ -40,7 +40,44 @@ const Index = () => {
               onClick={async () => {
                 try {
                   console.log("Button clicked!");
+
+
+                  ///tercera prueba
+
+                  /*
+                  const server = new Horizon.Server("https://horizon-testnet.stellar.org");
+                  const activePubKey = publicKey;
+                  const receiver = await server.loadAccount(activePubKey);
+
+                  const transaction = new TransactionBuilder(receiver, {
+                    fee: BASE_FEE,
+                    networkPassphrase: Networks.TESTNET,
+                  })
+                    .addOperation(
+                      Operation.invokeContractFunction({
+                        function: "mint",
+                        contract: "CBSJ47IYRYLOILMTSOXQVOPP56LLLPU47DY6AOTFUIE7IP4UEMXVOGME",
+                        args: [
+                          nativeToScVal(activePubKey, { type: 'address' })
+                        ],
+                      })
+                    ).setTimeout(30).build();
+
+                  const signedXDR = await signTransaction(transaction.toXDR());
+
+                  const signedTransaction = await TransactionBuilder.fromXDR(
+                    signedXDR.signedTxXdr,
+                    Networks.TESTNET
+                  );
+                  console.log("Signed transaction:", signedTransaction);
                   
+                  console.log("Signed transaction XDR:", signedTransaction.toXDR());
+
+
+                  //const tx = TransactionBuilder.fromXDR(signedXDR, "Test SDF Network ; September 2015");
+                  const sendResponse = await server.submitTransaction(signedTransaction);
+                  console.log('Send response:', sendResponse);
+                  */
                   /* tampoco va
                   //const StellarSdk = require("stellar-sdk");
                   const server = new Horizon.Server("https://horizon-testnet.stellar.org");
@@ -90,36 +127,35 @@ const Index = () => {
                   
                   */
 
-                  //* VIEJO NO SIRVE
+                  // VIEJO NO SIRVE
                   // Mint the transaction
+                  sorobanClient.options.publicKey = publicKey;
 
-                  const image = await sorobanClient.token_image();
-                  console.log("Token image:", image);
-                  
-                  const res = await image.result;
-                  console.log("Image response:", res);
-
-                  /* viejo
                   const response = await sorobanClient.mint({ to: publicKey });
 
-                  console.log("Minting transaction response:", response);
+                  // Set the public key for signing
 
+                  console.log("Minting transaction response:", response);
                   console.log("Mint response:", response.toXDR());
                   // Sign the transaction
-                  const signedResponse = await signTransaction(response.toXDR());
-                  console.log("Transaction signed:", signedResponse);
+                  // const signedResponse = await signTransaction(response.toXDR());
+                  //signedResponse.signerAddress = publicKey; 
+                  //console.log("Transaction signed:", signedResponse);
 
                   // JWT token (replace with your actual token)
-                  const jwtToken = "tgwBWa4plZe7IKqhsVBZlg_hP8zw8hsiykJqlaG09og";
+                  const jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjZDA5N2VkMWE1M2E5NmMyY2ExN2FlMjEyODRkNTUzMDMzNzRiYmEwZWFlN2M1ZTc5ZDc1NmJjYmQ2ZjFiNDJhIiwiZXhwIjoxNzU3ODM0OTc2LCJjcmVkaXRzIjoxMDAwMDAwMDAwLCJpYXQiOjE3NTA1NzczNzZ9.GpWqEyln70Ct34W8SC6hBP1lInypdX1x3mCKhuvbs6I";
+
+                  const body = new FormData();
+                  //body.append("xdr", signedResponse.signedTxXdr);
+                  body.append("xdr", response.toXDR());
 
                   // Post the signed transaction to the specified URL
                   const postResponse = await fetch("https://testnet.launchtube.xyz", {
                     method: "POST",
                     headers: {
-                      "Content-Type": "application/json",
                       "Authorization": `Bearer ${jwtToken}`, // Add JWT bearer token
                     },
-                    body: JSON.stringify({ xdr: signedResponse.signedTxXdr }),
+                    body,
                   });
 
                   if (postResponse.ok) {
@@ -143,10 +179,10 @@ const Index = () => {
               onClick={async () => {
                 try {
                   console.log("Read Button clicked!");
-                  
-                  const image = await sorobanClient.token_image();
+
+                  const image = await sorobanClient.tokens_of({ owner: publicKey });
                   console.log("Token image:", image);
-                  
+
                   const res = await image.result;
                   console.log("Image response:", res);
 

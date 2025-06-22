@@ -37,6 +37,20 @@ impl SorobanNFT {
         })
     }
 
+    pub fn tokens_of(env: Env, owner: Address) -> Vec<i128> {
+        let mut owned_tokens = Vec::new(&env);
+        let token_count: i128 = env.storage().persistent().get(&DataKey::TokenCount).unwrap_or(0);
+    
+        for token_id in 1..=token_count {
+            let actual_owner = Self::owner_of(env.clone(), token_id);
+            if actual_owner == owner {
+                owned_tokens.push_back(token_id);
+            }
+        }
+    
+        owned_tokens
+    }
+
     pub fn name(env: Env) -> String {
         String::from_str(&env, Self::NAME)
     }
