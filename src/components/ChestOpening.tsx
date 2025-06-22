@@ -11,10 +11,21 @@ interface ChestOpeningProps {
   onMint: () => Promise<boolean>; // Function that returns true if minting was successful
 }
 
+interface Reward {
+  type: 'card' | 'xlm';
+  name?: string;
+  rarity?: string;
+  color?: string;
+  image?: string;
+  amount?: number;
+  icon?: any;
+}
+
 const ChestOpening = ({ onClose, onMint }: ChestOpeningProps) => {
   const [chestState, setChestState] = useState<'closed' | 'minting' | 'opening' | 'opened' | 'revealing' | 'rewards'>('closed');
   const [currentRewardIndex, setCurrentRewardIndex] = useState(-1);
   const [revealedRewards, setRevealedRewards] = useState<number[]>([]);
+  const [rewards, setRewards] = useState<Reward[]>([]);
   const { toast } = useToast();
 
   // Function to get random image from the 3 available
@@ -32,11 +43,37 @@ const ChestOpening = ({ onClose, onMint }: ChestOpeningProps) => {
     return 'Unknown';
   };
 
-  const rewards = [
-    { type: 'card', name: getNameFromImage(getRandomImage()), rarity: 'Epic', color: 'from-purple-500 to-blue-500', image: getRandomImage() },
-    { type: 'card', name: getNameFromImage(getRandomImage()), rarity: 'Legendary', color: 'from-red-500 to-orange-500', image: getRandomImage() },
-    { type: 'xlm', amount: 0, icon: Gem }
-  ];
+  // Pre-calculate rewards when component mounts
+  useEffect(() => {
+    const generateRewards = () => {
+      const image1 = getRandomImage();
+      const image2 = getRandomImage();
+      
+      return [
+        { 
+          type: 'card' as const, 
+          name: getNameFromImage(image1), 
+          rarity: 'Epic', 
+          color: 'from-purple-500 to-blue-500', 
+          image: image1 
+        },
+        { 
+          type: 'card' as const, 
+          name: getNameFromImage(image2), 
+          rarity: 'Legendary', 
+          color: 'from-red-500 to-orange-500', 
+          image: image2 
+        },
+        { 
+          type: 'xlm' as const, 
+          amount: 0, 
+          icon: Gem 
+        }
+      ];
+    };
+
+    setRewards(generateRewards());
+  }, []);
 
   const handleChestClick = async () => {
     if (chestState === 'closed') {
@@ -145,8 +182,17 @@ const ChestOpening = ({ onClose, onMint }: ChestOpeningProps) => {
           </Button>
         )}
 
+        {/* Loading state while rewards are being generated */}
+        {rewards.length === 0 && (
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-yellow-400 mx-auto mb-4"></div>
+            <h2 className="text-2xl font-bold text-white mb-2">Preparing Rewards...</h2>
+            <p className="text-gray-300">✨ Setting up your treasure! ✨</p>
+          </div>
+        )}
+
         {/* Chest Animation */}
-        {chestState !== 'rewards' && chestState !== 'revealing' && (
+        {rewards.length > 0 && chestState !== 'rewards' && chestState !== 'revealing' && (
           <div className="text-center">
             <div
               onClick={chestState === 'minting' ? undefined : handleChestClick}
@@ -218,7 +264,7 @@ const ChestOpening = ({ onClose, onMint }: ChestOpeningProps) => {
         )}
 
         {/* Individual Reward Reveal */}
-        {chestState === 'revealing' && currentRewardIndex >= 0 && (
+        {rewards.length > 0 && chestState === 'revealing' && currentRewardIndex >= 0 && (
           <div className="text-center">
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-yellow-300 mb-2">🎉 New Reward! 🎉</h2>
@@ -284,7 +330,7 @@ const ChestOpening = ({ onClose, onMint }: ChestOpeningProps) => {
         )}
 
         {/* Final Rewards Display */}
-        {chestState === 'rewards' && (
+        {rewards.length > 0 && chestState === 'rewards' && (
           <Card className="bg-gradient-to-br from-purple-900/90 to-indigo-900/90 backdrop-blur-sm border-2 border-yellow-400/50 shadow-2xl">
             <CardContent className="p-6">
               <div className="text-center mb-6">

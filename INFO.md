@@ -38,6 +38,12 @@ stellar contract invoke \
 
 # A command
 
+stellar contract deploy \
+  --wasm target/wasm32v1-none/release/soroban_nft.wasm \
+  --source alice \
+  --network testnet \
+  --alias soroban_nft
+
 stellar contract bindings typescript   --network testnet   --contract-id CD4N56QEYZ5IGGC72TILFR25CNNVYMBDA2OKO5DJ6JI64GWBJAYCSPQ3   --output-dir packages/soroban_nft
 
 npm install && npm run build
