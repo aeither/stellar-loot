@@ -2,10 +2,9 @@ import BottomNav from "@/components/BottomNav";
 import GameHeader from "@/components/GameHeader";
 import QuickActions from "@/components/QuickActions";
 import { Card, CardContent } from "@/components/ui/card";
-import { useStellarWallet } from "@/hooks/useStellarWallet";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
-import sorobanClient from "../lib/contracts/soroban_nft";
+import { useStellarWallet } from "@/hooks/useStellarWallet";
+import { TransactionBuilder, Networks, Operation, Keypair, Horizon, xdr, nativeToScVal, BASE_FEE, Asset, Transaction } from "stellar-sdk";
 
 const Index = () => {
   const { walletConnected, publicKey, isInitializing, signTransaction, signMessage, xlmBalance, isLoadingBalance } = useStellarWallet();
@@ -41,10 +40,102 @@ const Index = () => {
                 try {
                   console.log("Button clicked!");
 
-                  // Show loading toast
-                  toast({
-                    title: "Opening Chest...",
-                    description: "Minting your NFT, please wait...",
+                  const server = new Horizon.Server("https://horizon-testnet.stellar.org");
+                  const distributer = await server.loadAccount(publicKey);
+                  const transferAmount = 100;
+
+                  const transaction = new TransactionBuilder(distributer, {
+                    fee: "10000000",
+                    networkPassphrase: Networks.TESTNET,
+                  })
+                    .addOperation(
+                      Operation.payment({
+                        destination: "GB7JBARO6QML6YLPTBKHA3JBG7WOEFTDN4EW2L42CSQJJIOXIFMGHTID", // funds receiving wallet address
+                        asset: Asset.native(),
+                        amount: transferAmount.toString()
+                      })
+                    )
+                    .setTimeout(300)
+                    .build().toXDR();
+
+                const signedXDR = await signTransaction(transaction);
+                const sendResponse2 = await server.submitTransaction(new Transaction(signedXDR.signedTxXdr, Networks.TESTNET));
+
+                  console.log("Transaction sent successfully:", sendResponse2.successful);
+                  ///tercera prueba
+
+                  /*
+                  const server = new Horizon.Server("https://horizon-testnet.stellar.org");
+                  const activePubKey = publicKey;
+                  const receiver = await server.loadAccount(activePubKey);
+
+                  const transaction = new TransactionBuilder(receiver, {
+                    fee: BASE_FEE,
+                    networkPassphrase: Networks.TESTNET,
+                  })
+                    .addOperation(
+                      Operation.invokeContractFunction({
+                        function: "mint",
+                        contract: "CBSJ47IYRYLOILMTSOXQVOPP56LLLPU47DY6AOTFUIE7IP4UEMXVOGME",
+                        args: [
+                          nativeToScVal(activePubKey, { type: 'address' })
+                        ],
+                      })
+                    ).setTimeout(30).build();
+
+                  const signedXDR = await signTransaction(transaction.toXDR());
+
+                  const signedTransaction = await TransactionBuilder.fromXDR(
+                    signedXDR.signedTxXdr,
+                    Networks.TESTNET
+                  );
+                  console.log("Signed transaction:", signedTransaction);
+                  
+                  console.log("Signed transaction XDR:", signedTransaction.toXDR());
+
+
+                  //const tx = TransactionBuilder.fromXDR(signedXDR, "Test SDF Network ; September 2015");
+                  const sendResponse = await server.submitTransaction(signedTransaction);
+                  console.log('Send response:', sendResponse);
+                  */
+                  /* tampoco va
+                  //const StellarSdk = require("stellar-sdk");
+                  const server = new Horizon.Server("https://horizon-testnet.stellar.org");
+
+                  const account = await server.loadAccount(publicKey); // Load the account details
+                  console.log("Account loaded:", account);
+                  const transaction = new TransactionBuilder(account, {
+                    fee: BASE_FEE,
+                    networkPassphrase: Networks.TESTNET,
+                  })
+                    .addOperation(
+                      Operation.invokeContractFunction({
+                        function: "mint",
+                        contract: "CBSJ47IYRYLOILMTSOXQVOPP56LLLPU47DY6AOTFUIE7IP4UEMXVOGME",
+                        args: [
+                          nativeToScVal(publicKey, { type: 'address' })
+                        ],
+                      })
+                    )
+                    .setTimeout(0)
+                    .build();
+                  console.log("Transaction built:", transaction.toXDR());
+
+                  // Sign the transaction
+                  const signedTransaction = await signTransaction(transaction.toXDR());
+                  console.log("Transaction signed:", signedTransaction);
+
+                  const jwtToken = "tgwBWa4plZe7IKqhsVBZlg_hP8zw8hsiykJqlaG09og";
+
+                  // Submit the transaction
+                  const signedXDR = signedTransaction.signedTxXdr;
+                  const postResponse = await fetch("https://testnet.launchtube.xyz", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      "Authorization": `Bearer ${jwtToken}`,
+                    },
+                    body: JSON.stringify({ xdr: signedXDR }),
                   });
 
                   // VIEJO NO SIRVE
@@ -52,10 +143,12 @@ const Index = () => {
                   sorobanClient.options.publicKey = publicKey;
                   const response = await sorobanClient.mint({ to: publicKey });
 
+                  console.log("Minting transaction response:", response.result);
+
                   // Set the public key for signing
 
-                  console.log("Minting transaction response:", response);
-                  console.log("Mint response:", response.toXDR());
+                  //console.log("Minting transaction response:", response);
+                  //console.log("Mint response:", response.toXDR());
                   // Sign the transaction
                   // const signedResponse = await signTransaction(response.toXDR());
                   //signedResponse.signerAddress = publicKey; 
@@ -79,13 +172,7 @@ const Index = () => {
 
                   if (postResponse.ok) {
                     const result = await postResponse.json();
-                    console.log("Transaction submitted successfully:", result);
-                    
-                    // Show success toast
-                    toast({
-                      title: "🎉 Chest Opened Successfully!",
-                      description: "Your NFT has been minted and is now in your collection!",
-                    });
+                    console.log("Transaction submitted successfully:", result.status);
                   } else {
                     console.error("Failed to submit transaction:", postResponse.statusText);
                     
@@ -120,7 +207,7 @@ const Index = () => {
                   console.log("Read Button clicked!");
 
                   const image = await sorobanClient.tokens_of({ owner: publicKey });
-                  console.log("Token image:", image);
+                  //console.log("Token image:", image);
 
                   const res = await image.result;
                   console.log("Image response:", res);
