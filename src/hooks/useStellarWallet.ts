@@ -6,50 +6,38 @@ import {
   StellarWalletsKit,
   WalletNetwork,
 } from "@creit.tech/stellar-wallets-kit";
-import Server from '@stellar/stellar-sdk';
+import { Horizon } from '@stellar/stellar-sdk'
 
 export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET) => {
   const [walletKit, setWalletKit] = useState<StellarWalletsKit | null>(null);
   const [walletConnected, setWalletConnected] = useState(false);
   const [publicKey, setPublicKey] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
-  const [xlmBalance, setXlmBalance] = useState<string>("0");
-  const [isLoadingBalance, setIsLoadingBalance] = useState(false);
+  const [balance, setBalance] = useState<number | null>(null);
 
-  // Initialize Stellar server based on network
-  const getServer = () => {
-    return network === WalletNetwork.TESTNET 
-      ? new Server('https://horizon-testnet.stellar.org')
-      : new Server('https://horizon.stellar.org');
-  };
-
-  // Function to fetch XLM balance
-  const fetchXlmBalance = async (accountId: string): Promise<number> => {
-    try {
-      setIsLoadingBalance(true);
-      const server = getServer();
-      const account = await server.loadAccount(accountId);
-      const xlmBalanceObj = account.balances.find(b => b.asset_type === 'native');
-      const balance = parseFloat(xlmBalanceObj ? xlmBalanceObj.balance : '0');
-      setXlmBalance(balance.toString());
-      return balance;
-    } catch (error) {
-      console.error('Error fetching balance:', error);
-      setXlmBalance("0");
-      return 0;
-    } finally {
-      setIsLoadingBalance(false);
-    }
-  };
-
-  // Fetch balance when public key changes
-  useEffect(() => {
-    if (publicKey && walletConnected) {
-      fetchXlmBalance(publicKey);
-    } else {
-      setXlmBalance("0");
-    }
-  }, [publicKey, walletConnected, network]);
+    const getBalance = async (): Promise<number | null> => {
+      if (publicKey) {
+        try {
+          const server = new Horizon.Server('https://horizon-testnet.stellar.org');
+          const account = await server.accounts().accountId(publicKey).call();
+          console.log('account.balances', account.balances);
+    
+          const nativeBalance = account.balances.find(
+            (balance) => balance.asset_type === 'native'
+          )?.balance;
+    
+          const numericBalance = nativeBalance ? parseFloat(nativeBalance) : null;
+          setBalance(numericBalance); // Update state
+          console.log('balance XLM', numericBalance);
+    
+          return numericBalance; // Return the balance
+        } catch (error) {
+          console.error('An error occurred:', error);
+          return null; // Return null in case of an error
+        }
+      }
+      return null; // Return null if publicKey is not set
+    };
 
   useEffect(() => {
     const initializeWalletKit = async () => {
@@ -70,6 +58,7 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
           if (address && address.address) {
             setWalletConnected(true);
             setPublicKey(address.address);
+
           }
         } catch (error) {
           // Wallet not connected, which is expected
@@ -124,7 +113,6 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
       await walletKit.disconnect();
       setWalletConnected(false);
       setPublicKey(null);
-      setXlmBalance("0");
     } catch (error) {
       console.error('Error disconnecting wallet:', error);
     }
@@ -156,24 +144,16 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
     }
   };
 
-  const refreshBalance = async (): Promise<number> => {
-    if (publicKey && walletConnected) {
-      return await fetchXlmBalance(publicKey);
-    }
-    return 0;
-  };
 
   return { 
     walletKit, 
     walletConnected, 
     publicKey,
     isInitializing,
-    xlmBalance,
-    isLoadingBalance,
     connectWallet, 
     disconnectWallet,
     signTransaction,
     signMessage,
-    refreshBalance
+    getBalance,
   };
 };
