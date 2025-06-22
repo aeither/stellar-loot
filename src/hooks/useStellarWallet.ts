@@ -6,7 +6,7 @@ import {
   StellarWalletsKit,
   WalletNetwork,
 } from "@creit.tech/stellar-wallets-kit";
-import Server from "@stellar/stellar-sdk";
+import Server from '@stellar/stellar-sdk';
 
 export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET) => {
   const [walletKit, setWalletKit] = useState<StellarWalletsKit | null>(null);
@@ -24,24 +24,19 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
   };
 
   // Function to fetch XLM balance
-  const fetchXlmBalance = async (address: string) => {
+  const fetchXlmBalance = async (accountId: string): Promise<number> => {
     try {
       setIsLoadingBalance(true);
       const server = getServer();
-      const account = await server.loadAccount(address);
-      
-      // Find the XLM (native asset) balance
-      const xlmBalance = account.balances.find(
-        (bal) => bal.asset_type === 'native'
-      );
-      
-      const balance = xlmBalance ? xlmBalance.balance : '0';
-      setXlmBalance(balance);
+      const account = await server.loadAccount(accountId);
+      const xlmBalanceObj = account.balances.find(b => b.asset_type === 'native');
+      const balance = parseFloat(xlmBalanceObj ? xlmBalanceObj.balance : '0');
+      setXlmBalance(balance.toString());
       return balance;
     } catch (error) {
-      console.error('Error loading account balance:', error);
+      console.error('Error fetching balance:', error);
       setXlmBalance("0");
-      return "0";
+      return 0;
     } finally {
       setIsLoadingBalance(false);
     }
@@ -161,11 +156,11 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
     }
   };
 
-  const refreshBalance = async () => {
+  const refreshBalance = async (): Promise<number> => {
     if (publicKey && walletConnected) {
       return await fetchXlmBalance(publicKey);
     }
-    return "0";
+    return 0;
   };
 
   return { 

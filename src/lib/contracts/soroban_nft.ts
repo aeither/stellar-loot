@@ -7,4 +7,3 @@ export default new Client({
   allowHttp: true,
   publicKey: undefined, // this is optional, but if you want to use the client to sign transactions, you need to set it
 });
-
