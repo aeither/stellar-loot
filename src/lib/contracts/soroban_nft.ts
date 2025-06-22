@@ -1,4 +1,4 @@
-import { Client, networks } from "soroban_nft"; // import the Client class and networks from the bindings package
+import { Client, networks } from "soroban_nft"; // import the Client class and networks from the soroban_nft package
 
 // instantiate and export the Client class from the bindings package
 export default new Client({
