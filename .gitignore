@@ -12,6 +12,15 @@ dist
 dist-ssr
 *.local
 
+# Environment variables (contains secret keys)
+.env
+.env.local
+.env.*.local
+
+# Stellar identity files (contain mnemonics and secret keys)
+.stellar/identity/
+contracts/*/.stellar/identity/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
