@@ -6,12 +6,38 @@ import {
   StellarWalletsKit,
   WalletNetwork,
 } from "@creit.tech/stellar-wallets-kit";
+import { Horizon } from '@stellar/stellar-sdk'
 
 export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET) => {
   const [walletKit, setWalletKit] = useState<StellarWalletsKit | null>(null);
   const [walletConnected, setWalletConnected] = useState(false);
   const [publicKey, setPublicKey] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [balance, setBalance] = useState<number | null>(null);
+
+    const getBalance = async (): Promise<number | null> => {
+      if (publicKey) {
+        try {
+          const server = new Horizon.Server('https://horizon-testnet.stellar.org');
+          const account = await server.accounts().accountId(publicKey).call();
+          console.log('account.balances', account.balances);
+    
+          const nativeBalance = account.balances.find(
+            (balance) => balance.asset_type === 'native'
+          )?.balance;
+    
+          const numericBalance = nativeBalance ? parseFloat(nativeBalance) : null;
+          setBalance(numericBalance); // Update state
+          console.log('balance XLM', numericBalance);
+    
+          return numericBalance; // Return the balance
+        } catch (error) {
+          console.error('An error occurred:', error);
+          return null; // Return null in case of an error
+        }
+      }
+      return null; // Return null if publicKey is not set
+    };
 
   useEffect(() => {
     const initializeWalletKit = async () => {
@@ -32,6 +58,7 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
           if (address && address.address) {
             setWalletConnected(true);
             setPublicKey(address.address);
+
           }
         } catch (error) {
           // Wallet not connected, which is expected
@@ -125,6 +152,7 @@ export const useStellarWallet = (network: WalletNetwork = WalletNetwork.TESTNET)
     connectWallet, 
     disconnectWallet,
     signTransaction,
-    signMessage
+    signMessage,
+    getBalance,
   };
 };

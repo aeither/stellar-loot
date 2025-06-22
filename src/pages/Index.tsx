@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import GameHeader from "@/components/GameHeader";
 import QuickActions from "@/components/QuickActions";
@@ -9,13 +9,26 @@ import { useStellarWallet } from "@/hooks/useStellarWallet";
 import { TransactionBuilder, Networks, Operation, Keypair, Horizon, xdr, nativeToScVal, BASE_FEE, Asset, Transaction } from "stellar-sdk";
 
 const Index = () => {
-  const [xlmBalance] = useState(1250.75);
-  const { walletConnected, publicKey, isInitializing, signTransaction, signMessage } = useStellarWallet();
+  const { walletConnected, publicKey, isInitializing, signTransaction, signMessage, getBalance } = useStellarWallet();
+  const [xlmBalance, setXlmBalance] = useState<number | void>(null);
 
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const balance = await getBalance(); // Await the resolved balance from getBalance
+        setXlmBalance(balance); // Assign the resolved number to xlmBalance
+      } catch (error) {
+        console.error("Error fetching balance:", error);
+      }
+    };
+  
+    fetchBalance();
+  }, [getBalance]);
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
       <div className="relative z-10 pb-24">
-        <GameHeader xlmBalance={xlmBalance} notifications={0} />
+        <GameHeader xlmBalance={xlmBalance || 0} notifications={0} />
 
         {/* Main Content */}
         <div className="px-6 space-y-8">
