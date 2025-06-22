@@ -26,3 +26,12 @@ in "bindings" to build the JavaScript NPM package.
 add to frontend package.json
     "hello_world": "file:./contracts/nft/bindings",
 ** update the package name inside binding to match frontend import
+
+# Interact
+
+stellar contract invoke \
+  --network testnet \
+  --id CCG7MCOQKQACBW5VLQ7UQXTLG6P7JFOYGGE3IKQZNDAWGPVMAF4GADBD \
+  --source-account alice \
+  -- mint \
+  --to GCCOBOTHO6DFOTQ6PELRDG3GG4TDDNQL7KMJSHZOMGIVPTWJJGZY4ERO
