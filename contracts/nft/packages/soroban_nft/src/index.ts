@@ -34,7 +34,7 @@ if (typeof window !== 'undefined') {
 export const networks = {
   testnet: {
     networkPassphrase: "Test SDF Network ; September 2015",
-    contractId: "CBSJ47IYRYLOILMTSOXQVOPP56LLLPU47DY6AOTFUIE7IP4UEMXVOGME",
+    contractId: "CAEJTO4RBXU3U336KW4XKNYKNZ72CKIIVXQPNL5KKL7Y6BBSTLY6ACKV",
   }
 } as const
 
@@ -60,6 +60,26 @@ export interface Client {
      */
     simulate?: boolean;
   }) => Promise<AssembledTransaction<string>>
+
+  /**
+   * Construct and simulate a tokens_of transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
+   */
+  tokens_of: ({owner}: {owner: string}, options?: {
+    /**
+     * The fee to pay for the transaction. Default: BASE_FEE
+     */
+    fee?: number;
+
+    /**
+     * The maximum amount of time to wait for the transaction to complete. Default: DEFAULT_TIMEOUT
+     */
+    timeoutInSeconds?: number;
+
+    /**
+     * Whether to automatically simulate the transaction when constructing the AssembledTransaction. Default: true
+     */
+    simulate?: boolean;
+  }) => Promise<AssembledTransaction<Array<i128>>>
 
   /**
    * Construct and simulate a name transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
@@ -261,6 +281,7 @@ export class Client extends ContractClient {
     super(
       new ContractSpec([ "AAAAAgAAAAAAAAAAAAAAB0RhdGFLZXkAAAAAAwAAAAEAAAAAAAAABU93bmVyAAAAAAAAAQAAAAsAAAAAAAAAAAAAAApUb2tlbkNvdW50AAAAAAABAAAAAAAAAAlBcHByb3ZhbHMAAAAAAAABAAAACw==",
         "AAAAAAAAAAAAAAAIb3duZXJfb2YAAAABAAAAAAAAAAh0b2tlbl9pZAAAAAsAAAABAAAAEw==",
+        "AAAAAAAAAAAAAAAJdG9rZW5zX29mAAAAAAAAAQAAAAAAAAAFb3duZXIAAAAAAAATAAAAAQAAA+oAAAAL",
         "AAAAAAAAAAAAAAAEbmFtZQAAAAAAAAABAAAAEA==",
         "AAAAAAAAAAAAAAAGc3ltYm9sAAAAAAAAAAAAAQAAABA=",
         "AAAAAAAAAAAAAAAJdG9rZW5fdXJpAAAAAAAAAAAAAAEAAAAQ",
@@ -275,6 +296,7 @@ export class Client extends ContractClient {
   }
   public readonly fromJSON = {
     owner_of: this.txFromJSON<string>,
+        tokens_of: this.txFromJSON<Array<i128>>,
         name: this.txFromJSON<string>,
         symbol: this.txFromJSON<string>,
         token_uri: this.txFromJSON<string>,
